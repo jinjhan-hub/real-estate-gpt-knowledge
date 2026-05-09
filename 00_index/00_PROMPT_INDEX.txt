@@ -22,7 +22,7 @@
 
 ### A. 銷售圖卡與社群文案
 讀取：`02_sales_generator/`
-觸發詞：物件資料、銷售圖、圖卡、FB、IG、Threads、名片、房屋照片、風格選擇。
+觸發詞：觸發詞：物件資料、銷售圖、圖卡、FB 貼文、IG 圖文、Threads 文案、名片、房屋照片、風格選擇。
 
 ### B. 周邊機能查詢與資訊圖
 讀取：`03_nearby_facilities/`
@@ -32,14 +32,15 @@
 讀取：`04_floorplan_converter/`
 觸發詞：手繪格局、平面圖、格局圖、樓梯、衛浴、房間、建築平面圖。
 
-### D. 房市新聞、政策、報稅、觀點文
+### D. 房市新聞、政策、報稅提醒、觀點文
 讀取：`06_market_content/`
-觸發詞：房市新聞、政策、信用管制、報稅、房屋稅、房貸、買方影響。
+觸發詞：房市新聞、政策、信用管制、報稅提醒、房屋稅提醒、房貸、買方影響、FB 觀點文、Threads 觀點文。
+說明：若只是產製報稅、房屋稅、房貸或政策提醒文案，讀取本模組。
 
 ### E. 稅務試算器開發
 讀取：`07_tax_calculator/`
-觸發詞：房地合一稅、土地增值稅、GitHub Pages、試算器、稅務 API、列印 PDF。
-
+觸發詞：房地合一稅、土地增值稅、GitHub Pages、試算器、稅務 API、列印 PDF、HTML、JavaScript。
+說明：若任務是開發、修改、除錯或部署稅務試算器，讀取本模組。
 ### F. API / OpenAPI / Vercel Actions
 讀取：`08_api_actions/`
 觸發詞：API、OpenAPI、Action、Vercel、GitHub、Overpass、座標查詢。
