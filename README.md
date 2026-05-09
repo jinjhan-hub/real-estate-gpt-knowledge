@@ -73,6 +73,13 @@
 - `update api contract`
 - `refine global hard rules`
 
+2026-05-09 更新：
+完成周邊機能 API 串接。
+API endpoint：https://real-estate-nearby-api.vercel.app/api/nearby-facilities
+支援分類：school、transport、shopping、park、medical
+限制：每次最多查詢 2 種 categories
+新增 summary 欄位，供 GPT Actions 直接回覆使用。
+
 ## 注意事項
 
 本資料庫用於固定流程、限制、風格與輸出品質，不代表所有輸出都必須完全一致。  
