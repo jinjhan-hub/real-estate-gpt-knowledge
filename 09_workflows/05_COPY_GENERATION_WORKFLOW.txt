@@ -1,0 +1,30 @@
+# COPY GENERATION WORKFLOW
+
+用途：
+控制 FB / IG / Threads 文案生成流程。
+
+流程：
+
+1. 確認物件資料
+2. 確認平台
+3. 確認風格
+4. 載入對應：
+   - Templates
+   - Style Modules
+   - Hook Libraries
+   - Few-shot Examples
+5. 生成文案
+
+規則：
+
+- 文案應依平台動態調整
+- 不得所有平台共用同一份文案
+- 不得過度模板化
+- 不得每篇都固定相同結構
+
+應優先：
+
+- 真人感
+- 生活觀察
+- 可讀性
+- 自然感
