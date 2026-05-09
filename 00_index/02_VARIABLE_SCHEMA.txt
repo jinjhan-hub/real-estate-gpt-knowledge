@@ -8,6 +8,10 @@
 - city：縣市
 - district：鄉鎮市區
 - address：地址
+- latitude：緯度
+- longitude：經度
+- coordinate_source：座標來源，例如使用者提供 / Google Maps / API 轉換
+- coordinate_confirmation_status：未確認 / 已確認
 - property_type：物件類型，例如透天、華廈、大樓、土地、店住、店面
 - total_price：總價
 - land_area_ping：地坪
@@ -41,6 +45,7 @@
 - license_broker：經紀人證號
 - license_salesperson：營業員證號
 - office_address：店址
+- business_card_confirmation_status：未辨識 / 待確認 / 已確認
 
 ## 圖片素材資料
 
@@ -49,10 +54,12 @@
 - portrait_image：使用者提供的人物照片
 - floorplan_image：使用者提供的格局圖
 - map_or_sketch_image：使用者提供的地圖、手繪圖或街道示意圖
+- image_generation_permission：允許 / 不允許 / 待確認
+- image_source_rule：只能使用使用者提供照片 / 可使用示意圖 / 不可生成未提供場景
 
 ## 生成任務資料
 
-- target_platform：FB / IG / Threads
+- target_platform：FB 貼文 / IG 圖文 / Threads 文案
 - output_type：圖卡 / 文案 / 平面圖 / 周邊機能清單 / 試算器開發建議 / API 規格
 - style：投資理性感 / 自住溫暖感 / 首購友善感 / 高質感精品感 / 其他
 - image_count：需生成張數
@@ -62,6 +69,8 @@
 ## 缺漏資料規則
 
 - 重要欄位缺漏時，先列出「已辨識」與「待確認」。
-- 價格、坪數、地址、電話、證號、社群帳號不可猜測。
+- 價格、坪數、地址、座標、電話、證號、社群帳號不可猜測。
 - 圖片中看不清楚的字，不得自行補字。
 - 使用者確認前，不進入正式輸出。
+- 若使用者未提供街道示意圖或地圖素材，不主動生成街道圖，改以清單或資訊卡文案呈現。
+- 若使用者未提供物件照片，不得自行生成室內照、外觀照、街景或建物照片。
