@@ -2,25 +2,60 @@
 
 # IG TEMPLATE
 
-【短開頭】
+IG 文案不必固定格式。
 
-一句有畫面感的開頭，
-不要太廣告。
+應依：
 
-【亮點整理】
+- 圖卡內容
+- 物件類型
+- 指定風格
+- 買方需求
+- 圖文搭配情境
 
-・
-・
-・
+動態調整：
 
-【一句生活情境】
+- 開頭句
+- 條列數量
+- emoji 使用量
+- CTA 長短
+- Hashtags 數量
 
-用一句話補充這間物件適合的生活方式或買方需求。
+IG 文案應比 FB 更短，
+重點是：
 
-【短 CTA】
+- 有畫面感
+- 好閱讀
+- 適合搭配圖片
+- 不像房仲制式廣告
 
-引用 CTA_LIBRARY section。
+可使用：
 
-【Hashtags】
+- IG Hook Library
+- Observation Library
+- Emotional Transition Library
+- CTA Library
+- Hashtag Rules
+- Few-shot Examples
 
-引用 HASHTAG_RULES section。
+不必每篇固定包含：
+
+- 短開頭
+- 三點亮點
+- 一句生活情境
+- 短 CTA
+- Hashtags
+
+可依內容自然調整。
+
+避免：
+
+- 直接把 FB 文案縮短
+- 每篇都固定三個亮點
+- Hashtags 過多
+- emoji 過多
+- 太像銷售DM
+
+目標：
+
+讓 IG 文案像一則自然的圖文說明，
+而不是規格表。
