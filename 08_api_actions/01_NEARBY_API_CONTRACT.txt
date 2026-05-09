@@ -1,8 +1,13 @@
 # NEARBY API CONTRACT｜周邊機能 API 契約
 
-## Endpoint 概念
+## Endpoint
 
 `POST /api/nearby-facilities`
+
+本 API 用於依地址與經緯度查詢周邊生活機能。  
+地址主要用於顯示與確認，實際查詢以經緯度為主。
+
+---
 
 ## Request Body
 
@@ -12,46 +17,205 @@
   "latitude": 23.940380,
   "longitude": 120.559760,
   "radius": 1000,
-  "categories": ["transport", "school", "shopping", "park", "medical", "food"]
+  "categories": ["transport", "school", "shopping", "park", "medical", "food", "finance"]
 }
 ```
 
 ## 欄位說明
 
-- address：使用者提供地址
-- latitude：緯度
-- longitude：經度
-- radius：查詢半徑，單位公尺
-- categories：查詢類別
+- `address`：使用者提供地址
+- `latitude`：緯度
+- `longitude`：經度
+- `radius`：查詢半徑，單位公尺，預設 1000
+- `categories`：查詢類別
 
-## Response 建議
+## categories 固定類別
+
+固定使用英文類別，避免 API 接收中文造成錯誤：
+
+- `transport`：交通
+- `school`：教育
+- `shopping`：採買
+- `park`：休閒 / 公園
+- `medical`：醫療
+- `food`：餐飲
+- `finance`：金融
+
+若使用者輸入中文類別，GPT 應先轉換成對應英文類別，再呼叫 API。
+
+---
+
+## Request 驗證規則
+
+API 應檢查：
+
+- `address` 是否存在
+- `latitude` 是否為數字
+- `longitude` 是否為數字
+- `latitude` 是否落在台灣合理緯度範圍，約 21 至 26
+- `longitude` 是否落在台灣合理經度範圍，約 119 至 123
+- `radius` 是否為正數
+- `categories` 是否為支援類別
+
+若資料不完整，API 應回傳錯誤訊息，不應假裝查詢成功。
+
+---
+
+## Success Response 建議
 
 ```json
 {
+  "query_status": "success",
   "address": "彰化縣埔心鄉中山路143號",
   "center": {
     "latitude": 23.940380,
     "longitude": 120.559760
   },
   "radius": 1000,
+  "distance_type": "straight_line_estimate",
   "facilities": [
     {
       "category": "shopping",
+      "category_label": "採買",
       "name": "便利商店名稱",
       "distance_m": 350,
       "source": "overpass"
     }
   ],
-  "notes": []
+  "notes": [
+    "距離為依座標估算，實際路線與時間仍需依地圖導航及現場狀況為準。"
+  ]
 }
 ```
 
+---
+
+## Partial Response 建議
+
+若部分類別查詢不到結果：
+
+```json
+{
+  "query_status": "partial",
+  "address": "彰化縣埔心鄉中山路143號",
+  "center": {
+    "latitude": 23.940380,
+    "longitude": 120.559760
+  },
+  "radius": 1000,
+  "distance_type": "straight_line_estimate",
+  "facilities": [
+    {
+      "category": "shopping",
+      "category_label": "採買",
+      "name": "便利商店名稱",
+      "distance_m": 350,
+      "source": "overpass"
+    }
+  ],
+  "missing_categories": ["medical", "finance"],
+  "notes": [
+    "部分分類查詢結果有限，未列出的設施不代表實際不存在。"
+  ]
+}
+```
+
+---
+
+## Error Response 建議
+
+### 缺少座標
+
+```json
+{
+  "query_status": "error",
+  "error_code": "MISSING_COORDINATES",
+  "message": "缺少經緯度，無法穩定查詢周邊機能。"
+}
+```
+
+### 座標格式錯誤
+
+```json
+{
+  "query_status": "error",
+  "error_code": "INVALID_COORDINATES",
+  "message": "座標格式可能有誤，請確認是否為緯度、經度。"
+}
+```
+
+### 外部服務失敗
+
+```json
+{
+  "query_status": "error",
+  "error_code": "EXTERNAL_SERVICE_ERROR",
+  "message": "外部查詢服務暫時無回應，請稍後再試。"
+}
+```
+
+### 查無資料
+
+```json
+{
+  "query_status": "empty",
+  "message": "目前查詢結果有限，未取得可確認的周邊設施。"
+}
+```
+
+---
+
 ## GPT 輸出規則
 
-API 回傳後，GPT 不直接丟 JSON 給使用者。  
+API 回傳後，GPT 不直接丟 JSON 給一般使用者。  
 應整理成：
 
 - 分類清單
+- 約略距離
 - 生活圈觀察
 - 圖卡可用短句
 - 注意事項
+
+## GPT 不得做的事
+
+- 不得把 API 沒回傳的設施補進結果。
+- 不得把直線距離寫成實際路線距離。
+- 不得把查詢結果寫成 Google Maps 導航時間。
+- 不得把「附近有學校」寫成「明星學區」。
+- 不得把「附近有商家」寫成「成熟商圈」，除非另有資料依據。
+- 不得在 `query_status` 為 `error` 或 `empty` 時，輸出完整周邊機能清單。
+
+## GPT 建議輸出格式
+
+【周邊機能整理】
+
+地址：  
+座標：  
+查詢半徑：約 1000 公尺  
+距離說明：依座標粗估，實際路線仍需以地圖導航與現場為準。
+
+### 交通
+- 設施名稱：約 X 公尺
+
+### 採買
+- 設施名稱：約 X 公尺
+
+### 教育
+- 設施名稱：約 X 公尺
+
+### 休閒
+- 設施名稱：約 X 公尺
+
+### 醫療
+- 設施名稱：約 X 公尺
+
+### 餐飲
+- 設施名稱：約 X 公尺
+
+### 金融
+- 設施名稱：約 X 公尺
+
+【生活圈觀察】
+
+從目前查詢結果來看，＿＿＿＿。  
+實際生活便利性仍建議搭配現場路線、停車條件與使用需求確認。
