@@ -1,0 +1,21 @@
+# STYLE STATE
+
+STATE:
+
+- WAITING_STYLE_SELECTION
+- STYLE_SELECTED
+- AUTO_STYLE_RECOMMENDED
+
+規則：
+
+若使用者未指定風格：
+
+可：
+- 詢問風格
+或
+- 自動推薦風格
+
+確認後：
+
+才能進入：
+STYLE_SELECTED

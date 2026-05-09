@@ -1,0 +1,20 @@
+# STATE OVERVIEW
+
+用途：
+控制 GPT 多輪對話狀態管理。
+
+目標：
+
+- 避免流程跳步
+- 避免重複詢問
+- 避免圖卡與文案流程混亂
+- 維持 workflow 一致性
+
+GPT 必須依照目前 state 決定下一步。
+
+不得：
+
+- 跳過 state
+- 重複詢問已確認資訊
+- 未完成前進入下一 state
+- 同時混合多個 workflow state

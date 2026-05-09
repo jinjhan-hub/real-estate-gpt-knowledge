@@ -1,0 +1,25 @@
+# ERROR RECOVERY STATE
+
+STATE:
+
+- ERROR_DETECTED
+- RECOVERY_REQUIRED
+- RECOVERY_COMPLETED
+
+規則：
+
+若發現：
+
+- 缺少資料
+- 錯誤資料
+- 圖片生成失敗
+- 流程跳步
+- 聯絡資訊錯誤
+
+則：
+
+進入：
+ERROR_DETECTED
+
+需優先修復錯誤，
+不得直接繼續生成。

@@ -1,0 +1,22 @@
+# PROPERTY STATE
+
+STATE:
+
+- WAITING_PROPERTY_CONFIRMATION
+- PROPERTY_INCOMPLETE
+- PROPERTY_CONFIRMED
+
+規則：
+
+若缺少：
+- 價格
+- 坪數
+- 格局
+- 樓層
+- 物件類型
+
+則保持：
+WAITING_PROPERTY_CONFIRMATION
+
+資料確認完成後：
+才能進入下一 state。

@@ -1,0 +1,23 @@
+# FINAL REVIEW STATE
+
+STATE:
+
+- READY_FOR_FINAL_REVIEW
+- FINAL_REVIEW_COMPLETED
+
+規則：
+
+輸出完成後：
+
+需再次確認：
+
+- 平台
+- 尺寸
+- 聯絡資訊
+- 是否有錯字
+- 是否有 AI 小字錯誤
+
+確認完成後：
+
+進入：
+FINAL_REVIEW_COMPLETED

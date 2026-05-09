@@ -1,0 +1,22 @@
+# COPY STATE
+
+STATE:
+
+- READY_FOR_COPY
+- COPY_GENERATING
+- COPY_COMPLETED
+
+規則：
+
+文案生成前：
+
+需確認：
+
+- 平台
+- 風格
+- 必要資料
+
+確認後：
+
+才能進入：
+READY_FOR_COPY
