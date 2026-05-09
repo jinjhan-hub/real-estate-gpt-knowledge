@@ -1,0 +1,577 @@
+==============================
+檔案：08_api_actions/00_API_ACTIONS_OVERVIEW.txt
+==============================
+
+# API ACTIONS OVERVIEW｜API / OpenAPI / Vercel Actions 規則
+
+本模組處理：
+
+- GPT Actions
+- OpenAPI Schema
+- Vercel API
+- Overpass 周邊機能查詢
+- GitHub Knowledge 外部讀取架構
+- API 錯誤處理與資料回傳規則
+
+---
+
+## 核心原則
+
+- API 只做資料查詢、資料整理、格式轉換或特定運算。
+- API 不負責生成使用者未提供的圖片。
+- API 查不到資料時，應回報查不到，不得自行補資料。
+- API 回傳外的內容，不得被 GPT 當成查詢結果。
+- GPT Instructions 應寫清楚什麼時候調 API，什麼時候讀 Knowledge。
+- OpenAPI Schema 需保持簡潔、可驗證、可被 GPT Actions 正確讀取。
+- 修改 API 或 OpenAPI 前，需確認是否會影響既有 GPTs Action。
+
+---
+
+## GPT 與 Knowledge 分工
+
+### Instructions
+
+放：
+
+- 全域硬限制
+- 任務流程
+- 工具調用順序
+- 不可違反規則
+- 什麼情況要先確認使用者資料
+- 什麼情況要呼叫 API
+- 什麼情況只讀 Knowledge
+
+### Knowledge
+
+放：
+
+- 模板
+- 風格庫
+- 案例
+- 細節規則
+- 可替換資料
+- 輸出格式
+- 禁止事項
+- 模組化流程
+
+### API
+
+放：
+
+- 周邊機能查詢
+- 座標查詢
+- 外部資料讀取
+- 特定運算
+- 結構化資料回傳
+- 錯誤訊息
+- 查詢失敗狀態
+
+---
+
+## API 使用限制
+
+- API 回傳資料需如實呈現。
+- 不得把 API 沒回傳的設施、距離、地址、學校、商圈自行補上。
+- 不得把 API 估算距離寫成絕對精準距離。
+- 不得把 Overpass 查詢結果包裝成 Google Maps 導航結果。
+- 若 API 回傳資料不足，應標示「查詢結果有限」。
+- 若 API 發生錯誤，需回覆錯誤原因或請使用者補資料，不得假裝查詢成功。
+
+---
+
+## OpenAPI 維護規則
+
+修改 OpenAPI Schema 時：
+
+- 不得任意更改 endpoint。
+- 不得任意更改 operationId。
+- 不得任意刪除 requestBody 欄位。
+- 不得任意刪除 response 欄位。
+- 不得任意更改 required 欄位。
+- 不得破壞 JSON 格式。
+- 不得讓 schema 無法通過 GPT Actions 驗證。
+- 若新增欄位，需保持向下相容。
+- 若更改欄位名稱，需同步修改 API 程式與 GPT Instructions。
+
+---
+
+## Vercel API 維護規則
+
+- Vercel API 應保持 endpoint 穩定。
+- 環境變數不可寫死在前端。
+- API 錯誤需回傳清楚訊息。
+- 若外部服務失敗，需回傳可理解的錯誤狀態。
+- 不得讓 API 回傳空白結果卻顯示成功。
+- 若 Overpass 查詢逾時，需回傳 timeout 或查詢失敗訊息。
+- 若座標格式錯誤，需回傳座標錯誤訊息。
+
+---
+
+## 避免影響既有 API
+
+只要以下項目沒有被改掉，新增 Knowledge 結構通常不會影響原本串接：
+
+- API endpoint
+- operationId
+- request schema
+- response schema
+- required 欄位
+- GPT Actions 設定
+- Vercel 部署網址
+
+若改 Instructions 中的工具調用邏輯，才可能影響 API 使用方式。
+
+---
+
+## 錯誤處理原則
+
+常見錯誤需明確處理：
+
+### 1. 缺少地址
+
+回覆：
+
+「目前缺少地址，無法建立顯示名稱。請提供物件地址。」
+
+### 2. 缺少座標
+
+回覆：
+
+「目前缺少經緯度，無法穩定查詢周邊機能。請提供 Google Maps 複製的座標。」
+
+### 3. 座標格式錯誤
+
+回覆：
+
+「座標格式可能有誤，請確認是否為緯度、經度，例如 23.940380, 120.559760。」
+
+### 4. API 查無資料
+
+回覆：
+
+「目前 API 查詢結果有限，無法確認足夠周邊設施，不會另外補上未查證資料。」
+
+### 5. 外部服務逾時
+
+回覆：
+
+「外部查詢服務暫時無回應，建議稍後再查，或先改用使用者提供資料整理。」
+
+---
+
+## 安全輸出原則
+
+API 結果輸出給使用者時，需整理成可讀格式，例如：
+
+- 分類清單
+- 約略距離
+- 生活圈觀察
+- 資訊卡文案
+
+不要直接把原始 JSON 丟給一般使用者，除非使用者明確要求看 API 回傳資料。
+
+
+==============================
+檔案：08_api_actions/01_NEARBY_API_CONTRACT.txt
+==============================
+
+# NEARBY API CONTRACT｜周邊機能 API 契約
+
+## Endpoint
+
+`POST /api/nearby-facilities`
+
+本 API 用於依地址與經緯度查詢周邊生活機能。  
+地址主要用於顯示與確認，實際查詢以經緯度為主。
+
+---
+
+## Request Body
+
+```json
+{
+  "address": "彰化縣埔心鄉中山路143號",
+  "latitude": 23.940380,
+  "longitude": 120.559760,
+  "radius": 1000,
+  "categories": ["transport", "school", "shopping", "park", "medical", "food", "finance"]
+}
+```
+
+## 欄位說明
+
+- `address`：使用者提供地址
+- `latitude`：緯度
+- `longitude`：經度
+- `radius`：查詢半徑，單位公尺，預設 1000
+- `categories`：查詢類別
+
+## categories 固定類別
+
+固定使用英文類別，避免 API 接收中文造成錯誤：
+
+- `transport`：交通
+- `school`：教育
+- `shopping`：採買
+- `park`：休閒 / 公園
+- `medical`：醫療
+- `food`：餐飲
+- `finance`：金融
+
+若使用者輸入中文類別，GPT 應先轉換成對應英文類別，再呼叫 API。
+
+---
+
+## Request 驗證規則
+
+API 應檢查：
+
+- `address` 是否存在
+- `latitude` 是否為數字
+- `longitude` 是否為數字
+- `latitude` 是否落在台灣合理緯度範圍，約 21 至 26
+- `longitude` 是否落在台灣合理經度範圍，約 119 至 123
+- `radius` 是否為正數
+- `categories` 是否為支援類別
+
+若資料不完整，API 應回傳錯誤訊息，不應假裝查詢成功。
+
+---
+
+## Success Response 建議
+
+```json
+{
+  "query_status": "success",
+  "address": "彰化縣埔心鄉中山路143號",
+  "center": {
+    "latitude": 23.940380,
+    "longitude": 120.559760
+  },
+  "radius": 1000,
+  "distance_type": "straight_line_estimate",
+  "facilities": [
+    {
+      "category": "shopping",
+      "category_label": "採買",
+      "name": "便利商店名稱",
+      "distance_m": 350,
+      "source": "overpass"
+    }
+  ],
+  "notes": [
+    "距離為依座標估算，實際路線與時間仍需依地圖導航及現場狀況為準。"
+  ]
+}
+```
+
+---
+
+## Partial Response 建議
+
+若部分類別查詢不到結果：
+
+```json
+{
+  "query_status": "partial",
+  "address": "彰化縣埔心鄉中山路143號",
+  "center": {
+    "latitude": 23.940380,
+    "longitude": 120.559760
+  },
+  "radius": 1000,
+  "distance_type": "straight_line_estimate",
+  "facilities": [
+    {
+      "category": "shopping",
+      "category_label": "採買",
+      "name": "便利商店名稱",
+      "distance_m": 350,
+      "source": "overpass"
+    }
+  ],
+  "missing_categories": ["medical", "finance"],
+  "notes": [
+    "部分分類查詢結果有限，未列出的設施不代表實際不存在。"
+  ]
+}
+```
+
+---
+
+## Error Response 建議
+
+### 缺少座標
+
+```json
+{
+  "query_status": "error",
+  "error_code": "MISSING_COORDINATES",
+  "message": "缺少經緯度，無法穩定查詢周邊機能。"
+}
+```
+
+### 座標格式錯誤
+
+```json
+{
+  "query_status": "error",
+  "error_code": "INVALID_COORDINATES",
+  "message": "座標格式可能有誤，請確認是否為緯度、經度。"
+}
+```
+
+### 外部服務失敗
+
+```json
+{
+  "query_status": "error",
+  "error_code": "EXTERNAL_SERVICE_ERROR",
+  "message": "外部查詢服務暫時無回應，請稍後再試。"
+}
+```
+
+### 查無資料
+
+```json
+{
+  "query_status": "empty",
+  "message": "目前查詢結果有限，未取得可確認的周邊設施。"
+}
+```
+
+---
+
+## GPT 輸出規則
+
+API 回傳後，GPT 不直接丟 JSON 給一般使用者。  
+應整理成：
+
+- 分類清單
+- 約略距離
+- 生活圈觀察
+- 圖卡可用短句
+- 注意事項
+
+## GPT 不得做的事
+
+- 不得把 API 沒回傳的設施補進結果。
+- 不得把直線距離寫成實際路線距離。
+- 不得把查詢結果寫成 Google Maps 導航時間。
+- 不得把「附近有學校」寫成「明星學區」。
+- 不得把「附近有商家」寫成「成熟商圈」，除非另有資料依據。
+- 不得在 `query_status` 為 `error` 或 `empty` 時，輸出完整周邊機能清單。
+
+## GPT 建議輸出格式
+
+【周邊機能整理】
+
+地址：  
+座標：  
+查詢半徑：約 1000 公尺  
+距離說明：依座標粗估，實際路線仍需以地圖導航與現場為準。
+
+### 交通
+- 設施名稱：約 X 公尺
+
+### 採買
+- 設施名稱：約 X 公尺
+
+### 教育
+- 設施名稱：約 X 公尺
+
+### 休閒
+- 設施名稱：約 X 公尺
+
+### 醫療
+- 設施名稱：約 X 公尺
+
+### 餐飲
+- 設施名稱：約 X 公尺
+
+### 金融
+- 設施名稱：約 X 公尺
+
+【生活圈觀察】
+
+從目前查詢結果來看，＿＿＿＿。  
+實際生活便利性仍建議搭配現場路線、停車條件與使用需求確認。
+
+
+==============================
+檔案：08_api_actions/02_GITHUB_KNOWLEDGE_LOADER_RULES.txt
+==============================
+
+# GITHUB KNOWLEDGE LOADER RULES｜GitHub Knowledge 載入規則
+
+## 目的
+
+用 GitHub 管理多個 GPT 共用的 Knowledge 檔案，避免每個 GPT 都塞大量內容。
+
+本規則的目標是：
+
+- 讓 GPT 依任務精準讀取所需檔案
+- 避免一次載入全部 Knowledge
+- 降低上下文負擔
+- 維持輸出品質穩定
+- 讓不同 GPT 可共用同一套資料庫
+
+---
+
+## 基本載入流程
+
+1. 讀取 `manifest.json`
+2. 讀取 `00_index/00_PROMPT_INDEX.txt`
+3. 讀取 `00_index/01_ROUTING_TABLE.txt`
+4. 依使用者任務判斷應載入的模組
+5. 載入全域規則：
+   - `01_global/00_GLOBAL_HARD_RULES.txt`
+   - `01_global/01_CONFIRMATION_FLOW.txt`
+   - `01_global/02_FACT_AND_SOURCE_POLICY.txt`
+   - `01_global/03_OUTPUT_STYLE_BASELINE.txt`
+6. 載入任務對應模組
+7. 整理已知資料與缺漏資料
+8. 請使用者確認
+9. 執行任務
+
+---
+
+## 不要一次載入全部
+
+除非使用者要求完整檢查、重建、更新或審核知識庫，不然不要一次讀取所有檔案。
+
+應依任務載入：
+
+- 銷售圖卡 / 文案 → `02_sales_generator/`
+- 周邊機能 → `03_nearby_facilities/`
+- 手繪格局圖 → `04_floorplan_converter/`
+- 房市觀點文 → `06_market_content/`
+- 稅務試算器 → `07_tax_calculator/`
+- API / OpenAPI → `08_api_actions/`
+
+---
+
+## 主模組與輔助模組
+
+若任務只屬於單一模組，只載入該模組與全域規則。
+
+若任務跨模組，需先判斷主模組，再補讀輔助模組。
+
+範例：
+
+### 物件銷售圖卡 + 周邊機能
+
+主模組：
+
+- `02_sales_generator/`
+
+輔助模組：
+
+- `03_nearby_facilities/`
+
+### 周邊機能 API 串接
+
+主模組：
+
+- `08_api_actions/`
+
+輔助模組：
+
+- `03_nearby_facilities/`
+
+### 房市政策 FB 文案
+
+主模組：
+
+- `06_market_content/`
+
+輔助模組：
+
+- `01_global/02_FACT_AND_SOURCE_POLICY.txt`
+
+### 稅務試算器開發
+
+主模組：
+
+- `07_tax_calculator/`
+
+輔助模組：
+
+- `08_api_actions/`，僅在需要 API 或 GitHub Pages 部署時載入
+
+---
+
+## 找不到對應模組時
+
+若使用者任務無法明確對應模組：
+
+1. 先讀取全域規則
+2. 判斷是否需要使用者補充任務目標
+3. 不要自行創造新模組
+4. 不要硬套錯誤模組
+5. 若任務不在本資料庫範圍內，需明確告知目前 Knowledge 未涵蓋
+
+---
+
+## 檔案命名規則
+
+- 數字開頭，方便排序。
+- 英文檔名，避免 URL 編碼問題。
+- 內容使用繁體中文。
+- 一個檔案只處理一類任務。
+- 檔案名稱應清楚表示用途。
+- 不要把多個任務混在同一個檔案。
+
+---
+
+## 檔案更新規則
+
+更新 Knowledge 時：
+
+- 不要直接刪除全域硬限制。
+- 不要把案例寫進硬規則。
+- 不要把一次性物件資料寫進通用規則。
+- 不要把個人名片資訊寫成所有人通用預設值。
+- 若修改 API 契約，需同步檢查 OpenAPI、Vercel API 與 GPT Actions。
+- 若修改輸出模板，需確認不影響全域硬限制。
+
+---
+
+## 隨機性與一致性
+
+Knowledge 不是為了讓每個輸出完全一樣。
+
+它的作用是固定：
+
+- 品質底線
+- 任務流程
+- 語氣方向
+- 禁止事項
+- 資料確認流程
+- 平台差異
+- 圖片生成限制
+
+文案本身仍可依以下條件保留變化：
+
+- 平台
+- 物件類型
+- 使用者指定風格
+- 買方族群
+- 物件特色
+- 使用者語氣偏好
+
+---
+
+## 輸出原則
+
+讀取 Knowledge 後，不要把 Knowledge 原文整段貼給使用者，除非使用者要求檢查、修改或複製檔案內容。
+
+正常任務中，應將 Knowledge 轉換成：
+
+- 可執行流程
+- 清楚問題
+- 整理後資料
+- 文案
+- 圖卡規格
+- API 規格
+- 開發建議
