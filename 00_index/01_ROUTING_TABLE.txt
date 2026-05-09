@@ -1,0 +1,114 @@
+# ROUTING TABLE｜任務判斷與 Knowledge 調用表
+
+## 1. 銷售圖卡 / 社群文案
+
+使用者輸入包含：
+- 物件資料截圖
+- 房屋照片
+- 名片
+- 指定平台 FB / IG / Threads
+- 指定風格：投資理性感、自住溫暖感、首購友善感、高質感精品感
+
+應載入：
+- `02_sales_generator/00_MODULE_OVERVIEW.txt`
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
+- `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
+- `02_sales_generator/04_COPY_PLATFORM_RULES.txt`
+- `02_sales_generator/05_STYLE_LIBRARY.txt`
+
+輸出順序：
+1. 整理物件資料
+2. 請使用者確認資料是否正確
+3. 詢問平台與風格
+4. 生成圖片或文案
+5. 詢問是否需要改成其他平台版本
+
+## 2. 周邊機能查詢
+
+使用者輸入包含：
+- 地址
+- 經緯度
+- 周邊機能圖
+- 生活圈整理
+
+應載入：
+- `03_nearby_facilities/00_MODULE_OVERVIEW.txt`
+- `03_nearby_facilities/01_COORDINATE_POLICY.txt`
+- `03_nearby_facilities/02_FACILITY_CATEGORY_RULES.txt`
+- `03_nearby_facilities/03_NEARBY_OUTPUT_TEMPLATE.txt`
+
+輸出順序：
+1. 確認地址與座標
+2. 若只有地址，要求補座標或使用可用地理工具轉換後再請使用者確認
+3. 查詢或整理周邊機能
+4. 如果沒有使用者提供的街道示意圖，不主動生成街道示意圖
+5. 改以清單或資訊卡文案呈現
+
+## 3. 手繪格局圖轉平面圖
+
+使用者輸入包含：
+- 手繪圖
+- 要轉成平面圖
+- 要建築圖、簡約圖、彩色圖、3D圖
+
+應載入：
+- `04_floorplan_converter/00_MODULE_OVERVIEW.txt`
+- `04_floorplan_converter/01_RECOGNITION_CONFIRMATION_RULES.txt`
+- `04_floorplan_converter/02_GEOMETRY_LOCK_RULES.txt`
+- `04_floorplan_converter/03_FLOORPLAN_STYLE_LIBRARY.txt`
+
+輸出順序：
+1. 辨識空間與標示
+2. 對不清楚處提問
+3. 使用者確認後才生成
+4. 優先一次生成一張最穩定版本
+5. 多風格版本需分批生成，避免樓梯與空間位置錯亂
+
+## 4. 房市新聞與政策觀點文
+
+使用者輸入包含：
+- 新聞
+- 政策
+- 信用管制
+- 房貸
+- 報稅
+- 房屋稅
+
+應載入：
+- `06_market_content/00_MARKET_CONTENT_RULES.txt`
+- `06_market_content/01_FB_ANALYSIS_STRUCTURE.txt`
+- `06_market_content/02_THREADS_STRUCTURE.txt`
+- `06_market_content/03_FACT_CHECK_RULES.txt`
+
+輸出順序：
+1. 先確認資料來源與日期
+2. 不確定資料保留或標示
+3. 用「先講結論 → 原因 → 對買方影響 → 自然 CTA」
+4. 避免像新聞稿
+
+## 5. 稅務試算器開發
+
+應載入：
+- `07_tax_calculator/00_TAX_CALCULATOR_OVERVIEW.txt`
+- `07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt`
+- `07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt`
+- `07_tax_calculator/03_PRINT_AND_UI_RULES.txt`
+
+輸出順序：
+1. 先釐清是房地合一稅或土地增值稅
+2. 不直接保證稅額正確，標示試算性質
+3. 改程式時維持原功能，不任意刪除既有邏輯
+
+## 6. API / OpenAPI / Vercel Actions
+
+應載入：
+- `08_api_actions/00_API_ACTIONS_OVERVIEW.txt`
+- `08_api_actions/01_NEARBY_API_CONTRACT.txt`
+- `08_api_actions/02_GITHUB_KNOWLEDGE_LOADER_RULES.txt`
+
+輸出順序：
+1. 先確認用途與端點
+2. 維持 OpenAPI 格式有效
+3. 若涉及外部 API，清楚定義輸入、輸出與錯誤處理
+4. 不把 API 回傳外的資料當成事實

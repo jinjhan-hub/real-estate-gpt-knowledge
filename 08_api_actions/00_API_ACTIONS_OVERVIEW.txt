@@ -1,0 +1,51 @@
+# API ACTIONS OVERVIEW｜API / OpenAPI / Vercel Actions 規則
+
+本模組處理：
+
+- GPT Actions
+- OpenAPI Schema
+- Vercel API
+- Overpass 周邊機能查詢
+- GitHub Knowledge 外部讀取架構
+
+## 核心原則
+
+- API 只做資料查詢與資料整理，不負責生成未提供圖片。
+- 若 API 查不到，應回報查不到，而不是自行補資料。
+- GPT Instructions 應寫清楚什麼時候調 API，什麼時候讀 Knowledge。
+- OpenAPI Schema 需保持簡潔、可驗證。
+
+## GPT 與 Knowledge 分工
+
+### Instructions
+
+放：
+
+- 全域硬限制
+- 任務流程
+- 工具調用順序
+- 不可違反規則
+
+### Knowledge
+
+放：
+
+- 模板
+- 風格庫
+- 案例
+- 細節規則
+- 可替換資料
+
+### API
+
+放：
+
+- 周邊機能查詢
+- 座標查詢
+- 外部資料讀取
+- 特定運算
+
+## 避免影響既有 API
+
+只要 API endpoint、operationId、request schema 沒有被改掉，新增 Knowledge 結構不會影響原本串接。  
+若改 Instructions 中的工具調用邏輯，才可能影響 API 使用方式。

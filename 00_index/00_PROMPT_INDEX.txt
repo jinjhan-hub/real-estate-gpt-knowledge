@@ -1,0 +1,52 @@
+# PROMPT INDEX｜房仲 GPT Knowledge 索引
+
+用途：讓 GPT 或第三方 RAG 判斷該讀取哪些 Knowledge 檔案。
+
+## 必讀基礎檔
+
+1. `01_global/00_GLOBAL_HARD_RULES.txt`
+   - 全域硬限制
+   - 所有 GPT 都必須遵守
+
+2. `01_global/01_CONFIRMATION_FLOW.txt`
+   - 使用者資料確認流程
+   - 避免未確認就生成圖片或文案
+
+3. `01_global/02_FACT_AND_SOURCE_POLICY.txt`
+   - 事實、法規、數據、地址、聯絡資料處理規則
+
+4. `01_global/03_OUTPUT_STYLE_BASELINE.txt`
+   - 統一語氣、繁體中文、台灣房仲情境
+
+## 任務模組
+
+### A. 銷售圖卡與社群文案
+讀取：`02_sales_generator/`
+觸發詞：物件資料、銷售圖、圖卡、FB、IG、Threads、名片、房屋照片、風格選擇。
+
+### B. 周邊機能查詢與資訊圖
+讀取：`03_nearby_facilities/`
+觸發詞：周邊機能、附近、學校、市場、公園、交通、經緯度、Google Maps、Overpass。
+
+### C. 手繪格局圖轉數位平面圖
+讀取：`04_floorplan_converter/`
+觸發詞：手繪格局、平面圖、格局圖、樓梯、衛浴、房間、建築平面圖。
+
+### D. 房市新聞、政策、報稅、觀點文
+讀取：`06_market_content/`
+觸發詞：房市新聞、政策、信用管制、報稅、房屋稅、房貸、買方影響。
+
+### E. 稅務試算器開發
+讀取：`07_tax_calculator/`
+觸發詞：房地合一稅、土地增值稅、GitHub Pages、試算器、稅務 API、列印 PDF。
+
+### F. API / OpenAPI / Vercel Actions
+讀取：`08_api_actions/`
+觸發詞：API、OpenAPI、Action、Vercel、GitHub、Overpass、座標查詢。
+
+## 載入原則
+
+- 不要一次載入全部 Knowledge。
+- 使用者任務只需要一個模組時，只讀取該模組與全域檔。
+- 若任務跨模組，先讀取主任務模組，再補讀輔助模組。
+- 如果使用者上傳圖片，先執行資料辨識與確認，不直接進入圖片生成。

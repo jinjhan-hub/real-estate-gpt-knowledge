@@ -1,0 +1,92 @@
+{
+  "project": "real_estate_gpt_knowledge_db",
+  "version": "0.2.0",
+  "language": "zh-Hant-TW",
+  "purpose": "供房仲 GPTs / GitHub Knowledge / 外部 RAG 使用的模組化資料庫檔案；本版聚焦銷售圖卡、社群文案、周邊機能、格局圖、房市觀點、稅務與 API 模組",
+  "principles": [
+    "Instructions 放全域硬限制與流程控制",
+    "Knowledge 放可替換、可擴充、可調用的規則、模板、風格與案例",
+    "需要哪個功能才讀取哪個模組，避免一次載入全部內容",
+    "不憑空生成未提供的物件資訊、照片、建物、聯絡資訊或法規數字"
+  ],
+  "recommended_loader_order": [
+    "00_index/00_PROMPT_INDEX.txt",
+    "00_index/01_ROUTING_TABLE.txt",
+    "01_global/00_GLOBAL_HARD_RULES.txt",
+    "01_global/01_CONFIRMATION_FLOW.txt",
+    "依使用者任務載入對應 module"
+  ],
+  "modules": [
+    {
+      "id": "sales_generator",
+      "path": "02_sales_generator",
+      "trigger": [
+        "銷售圖",
+        "FB文案",
+        "IG文案",
+        "Threads",
+        "物件資料",
+        "名片"
+      ]
+    },
+    {
+      "id": "nearby_facilities",
+      "path": "03_nearby_facilities",
+      "trigger": [
+        "周邊機能",
+        "生活機能",
+        "附近",
+        "座標",
+        "經緯度"
+      ]
+    },
+    {
+      "id": "floorplan_converter",
+      "path": "04_floorplan_converter",
+      "trigger": [
+        "手繪格局圖",
+        "平面圖",
+        "格局圖",
+        "樓梯",
+        "房間標示"
+      ]
+    },
+    {
+      "id": "market_content",
+      "path": "06_market_content",
+      "trigger": [
+        "房市新聞",
+        "房市分析",
+        "報稅",
+        "政策",
+        "市場觀點"
+      ]
+    },
+    {
+      "id": "tax_calculator",
+      "path": "07_tax_calculator",
+      "trigger": [
+        "房地合一",
+        "土地增值稅",
+        "試算器",
+        "GitHub Pages",
+        "稅務"
+      ]
+    },
+    {
+      "id": "api_actions",
+      "path": "08_api_actions",
+      "trigger": [
+        "API",
+        "OpenAPI",
+        "Action",
+        "Vercel",
+        "Overpass"
+      ]
+    }
+  ],
+  "change_log": [
+    "v0.2.0：刪除 persona_shanshan 模組。",
+    "v0.2.0：清除索引、路由表、變數表與主控 Instructions 中已不使用的影音平台觸發與流程。"
+  ]
+}

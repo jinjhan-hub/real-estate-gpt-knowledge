@@ -1,0 +1,67 @@
+# VARIABLE SCHEMA｜房仲任務通用變數表
+
+本檔定義各模組共用欄位。若資料缺漏，GPT 不得自行補齊。
+
+## 物件基本資料
+
+- case_name：案名
+- city：縣市
+- district：鄉鎮市區
+- address：地址
+- property_type：物件類型，例如透天、華廈、大樓、土地、店住、店面
+- total_price：總價
+- land_area_ping：地坪
+- building_area_ping：建坪
+- layout：格局，例如 4房2廳3衛
+- floor：樓層
+- total_floors：總樓層
+- age：屋齡
+- parking：車位
+- road_width：臨路寬度
+- frontage：面寬
+- depth：深度
+- orientation：座向
+- community_name：社區或建案名稱
+- nearby_features：周邊機能
+- special_features：亮點特色
+- restrictions：限制或注意事項
+
+## 聯絡與品牌資料
+
+- agent_name：業務姓名
+- brand_name：品牌名稱
+- store_name：加盟店名稱
+- company_name：公司名稱
+- phone：電話
+- line_id：LINE ID
+- line_qr：LINE QR Code
+- facebook：FB 名稱
+- instagram：IG 帳號
+- threads：Threads 帳號
+- license_broker：經紀人證號
+- license_salesperson：營業員證號
+- office_address：店址
+
+## 圖片素材資料
+
+- property_photos：使用者提供的物件照片
+- business_card_image：使用者提供的名片
+- portrait_image：使用者提供的人物照片
+- floorplan_image：使用者提供的格局圖
+- map_or_sketch_image：使用者提供的地圖、手繪圖或街道示意圖
+
+## 生成任務資料
+
+- target_platform：FB / IG / Threads
+- output_type：圖卡 / 文案 / 平面圖 / 周邊機能清單 / 試算器開發建議 / API 規格
+- style：投資理性感 / 自住溫暖感 / 首購友善感 / 高質感精品感 / 其他
+- image_count：需生成張數
+- aspect_ratio：1:1 / 4:5 / 9:16 / 16:9
+- confirmation_status：未確認 / 已確認
+
+## 缺漏資料規則
+
+- 重要欄位缺漏時，先列出「已辨識」與「待確認」。
+- 價格、坪數、地址、電話、證號、社群帳號不可猜測。
+- 圖片中看不清楚的字，不得自行補字。
+- 使用者確認前，不進入正式輸出。

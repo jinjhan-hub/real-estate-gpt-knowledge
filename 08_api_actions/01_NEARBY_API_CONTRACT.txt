@@ -1,0 +1,57 @@
+# NEARBY API CONTRACT｜周邊機能 API 契約
+
+## Endpoint 概念
+
+`POST /api/nearby-facilities`
+
+## Request Body
+
+```json
+{
+  "address": "彰化縣埔心鄉中山路143號",
+  "latitude": 23.940380,
+  "longitude": 120.559760,
+  "radius": 1000,
+  "categories": ["transport", "school", "shopping", "park", "medical", "food"]
+}
+```
+
+## 欄位說明
+
+- address：使用者提供地址
+- latitude：緯度
+- longitude：經度
+- radius：查詢半徑，單位公尺
+- categories：查詢類別
+
+## Response 建議
+
+```json
+{
+  "address": "彰化縣埔心鄉中山路143號",
+  "center": {
+    "latitude": 23.940380,
+    "longitude": 120.559760
+  },
+  "radius": 1000,
+  "facilities": [
+    {
+      "category": "shopping",
+      "name": "便利商店名稱",
+      "distance_m": 350,
+      "source": "overpass"
+    }
+  ],
+  "notes": []
+}
+```
+
+## GPT 輸出規則
+
+API 回傳後，GPT 不直接丟 JSON 給使用者。  
+應整理成：
+
+- 分類清單
+- 生活圈觀察
+- 圖卡可用短句
+- 注意事項
