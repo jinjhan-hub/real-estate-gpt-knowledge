@@ -84,3 +84,299 @@ API endpoint：https://real-estate-nearby-api.vercel.app/api/nearby-facilities
 
 本資料庫用於固定流程、限制、風格與輸出品質，不代表所有輸出都必須完全一致。  
 實際文案仍應依物件條件、平台、風格、使用者需求與可確認資料調整。
+
+# Real Estate GPT System｜版本更新歷程
+
+## v1.0｜單一 Prompt GPTs
+
+初始版本。
+
+架構：
+
+* 單一 Instructions
+* 單一 Knowledge
+* 固定 Prompt
+* 靜態輸出
+
+特徵：
+
+* 所有規則集中在 GPTs Instructions
+* 所有知識集中於單一 Knowledge
+* 無法動態載入
+* 容易 context 汙染
+* 長對話穩定性低
+
+主要功能：
+
+* 房仲圖卡生成
+* FB / IG / Threads 文案
+* 基礎格局圖轉換
+
+---
+
+# v2.0｜Knowledge Modularization
+
+開始拆分 Knowledge。
+
+新增：
+
+* Template Library
+* Style Library
+* CTA Library
+* Platform Rules
+
+改善：
+
+* 降低單一 Knowledge 過大問題
+* 提高文案風格控制
+* 提高平台差異化輸出
+
+開始建立：
+
+* 投資理性感
+* 自住溫暖感
+* 首購友善感
+* 高質感精品感
+
+---
+
+# v3.0｜Dynamic Knowledge API
+
+架構重大升級。
+
+新增：
+
+* GitHub Knowledge Database
+* Vercel API
+* GPT Actions
+
+架構：
+
+GPTs
+→ Actions
+→ Vercel API
+→ GitHub Modules
+
+改善：
+
+* 不再依賴單一 GPTs Knowledge
+* 開始支援 Dynamic Knowledge Loading
+* 可外部更新知識庫
+* 降低 GPTs context 壓力
+
+完成：
+
+* `/api/knowledge-module`
+* `getKnowledgeModule`
+
+---
+
+# v4.0｜Folder-based Modules
+
+開始建立真正模組化架構。
+
+新增：
+
+* sales_generator
+* nearby_facilities
+* floorplan_converter
+* api_actions
+* examples
+
+改善：
+
+* 模組分離
+* 不同任務獨立知識庫
+* 避免不同功能互相污染
+
+開始支援：
+
+* Folder-based Knowledge
+* Multi-file Retrieval
+
+---
+
+# v5.0｜Granular Section Loading
+
+完成：
+
+Section-level Retrieval。
+
+支援：
+
+```txt
+module=sales_generator&section=08_FB_TEMPLATE
+```
+
+改善：
+
+* 每次只載入必要 section
+* 大幅降低 context 汙染
+* 提高輸出穩定性
+* 提高文案風格一致性
+
+開始拆分：
+
+* FB Template
+* IG Template
+* Threads Template
+* CTA Library
+* Hook Library
+* Observation Library
+
+---
+
+# v6.0｜Workflow System
+
+建立 Workflow Architecture。
+
+新增：
+
+* Property Confirmation Workflow
+* Platform Selection Workflow
+* Style Selection Workflow
+* Image Generation Workflow
+* Copy Generation Workflow
+* Final Review Workflow
+
+改善：
+
+* GPT 開始具備流程控制
+* 不再直接跳生成
+* 圖卡與文案開始分離
+* 生成順序開始可控
+
+完成：
+
+* Workflow Routing
+* Workflow Modules
+* Image / Copy Separation
+
+---
+
+# v6.5｜Workflow Enforcement
+
+加入：
+
+Hard Blocking Rules。
+
+改善：
+
+* 禁止模糊文案繞過
+* 禁止資料不足直接生成
+* 禁止自行補資料
+* 強制資料確認
+
+開始具備：
+
+* Safety Enforcement
+* Generation Blocking
+* Confirmation-first Generation
+
+正式建立：
+
+```txt
+Workflow > Generation
+```
+
+架構。
+
+---
+
+# v7.0｜State Machine Architecture
+
+建立：
+
+Conversation State System。
+
+新增：
+
+* PROPERTY STATE
+* PLATFORM STATE
+* STYLE STATE
+* IMAGE STATE
+* COPY STATE
+* FINAL REVIEW STATE
+* ERROR RECOVERY STATE
+
+改善：
+
+* 多輪對話穩定性
+* 降低重複詢問
+* 降低流程跳步
+* 降低 context 混亂
+
+開始具備：
+
+* Multi-turn Workflow Control
+* Conversational Pipeline
+* Error Recovery
+* State Persistence Logic
+
+正式從：
+
+```txt
+Prompt System
+```
+
+進化為：
+
+```txt
+Conversational Agent Framework
+```
+
+---
+
+# 目前架構（v7.0）
+
+目前系統：
+
+GPTs Instructions
+→ Router / Workflow / State Control Layer
+
+GPT Actions
+→ getKnowledgeModule
+→ searchNearbyFacilities
+
+Vercel API
+→ knowledge-module
+→ nearby-facilities
+
+GitHub
+→ Dynamic Knowledge Database
+
+目前能力：
+
+* Dynamic Modular Knowledge
+* Folder-based Modules
+* Granular Section Loading
+* Workflow Enforcement
+* State Machine Control
+* Image / Copy Separation
+* Few-shot Retrieval
+* Hook Injection
+* Emotional Transition Injection
+* Platform-specific Generation
+
+---
+
+# 下一階段規劃（v8+）
+
+預計新增：
+
+* Session Memory
+* Auto Context Compression
+* Smart Defaults
+* Self Evaluation
+* Response Scoring
+* Multi-Agent Routing
+* Retry Recovery
+* Auto Tool Arbitration
+
+目標：
+
+建立：
+
+```txt
+Autonomous Real Estate Content Agent System
+```
