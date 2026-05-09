@@ -1,0 +1,26 @@
+# 09_IG_TEMPLATE.txt
+
+# IG TEMPLATE
+
+【短開頭】
+
+一句有畫面感的開頭，
+不要太廣告。
+
+【亮點整理】
+
+・
+・
+・
+
+【一句生活情境】
+
+用一句話補充這間物件適合的生活方式或買方需求。
+
+【短 CTA】
+
+引用 CTA_LIBRARY section。
+
+【Hashtags】
+
+引用 HASHTAG_RULES section。
