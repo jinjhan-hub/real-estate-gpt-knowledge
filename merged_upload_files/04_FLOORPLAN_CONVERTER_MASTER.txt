@@ -1,6 +1,12 @@
-==============================
-檔案：04_floorplan_converter/00_MODULE_OVERVIEW.txt
-==============================
+# FLOORPLAN CONVERTER MASTER｜格局圖合併檔
+
+本檔由分檔自動合併，供 GPTs Knowledge 上傳使用。
+請以原始分檔作為主要維護來源。
+
+
+---
+
+# SOURCE: 04_floorplan_converter/00_MODULE_OVERVIEW.txt
 
 # FLOORPLAN CONVERTER MODULE｜手繪格局圖轉換模組
 
@@ -67,9 +73,9 @@
 「此圖為依使用者提供手繪圖整理的格局示意圖，非正式建築圖、測量圖或施工圖，實際格局與尺寸仍需依建物謄本、建築圖說或現場為準。」
 
 
-==============================
-檔案：04_floorplan_converter/01_RECOGNITION_CONFIRMATION_RULES.txt
-==============================
+---
+
+# SOURCE: 04_floorplan_converter/01_RECOGNITION_CONFIRMATION_RULES.txt
 
 # RECOGNITION CONFIRMATION RULES｜格局圖辨識與確認規則
 
@@ -172,9 +178,9 @@
 「我先依照手繪圖整理出格局辨識結果。請先確認樓梯、衛浴、房間與方向箭頭的位置是否正確，確認後我再轉成數位平面圖。」
 
 
-==============================
-檔案：04_floorplan_converter/02_GEOMETRY_LOCK_RULES.txt
-==============================
+---
+
+# SOURCE: 04_floorplan_converter/02_GEOMETRY_LOCK_RULES.txt
 
 # GEOMETRY LOCK RULES｜平面圖幾何鎖定規則
 
@@ -313,9 +319,9 @@
 「此圖為依使用者提供手繪圖整理的格局示意圖，非正式建築圖、測量圖或施工圖，實際格局與尺寸仍需依建物謄本、建築圖說或現場為準。」
 
 
-==============================
-檔案：04_floorplan_converter/03_FLOORPLAN_STYLE_LIBRARY.txt
-==============================
+---
+
+# SOURCE: 04_floorplan_converter/03_FLOORPLAN_STYLE_LIBRARY.txt
 
 # FLOORPLAN STYLE LIBRARY｜平面圖風格庫
 

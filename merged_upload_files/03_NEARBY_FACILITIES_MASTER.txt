@@ -1,6 +1,12 @@
-==============================
-檔案：03_nearby_facilities/00_MODULE_OVERVIEW.txt
-==============================
+# NEARBY FACILITIES MASTER｜周邊機能合併檔
+
+本檔由分檔自動合併，供 GPTs Knowledge 上傳使用。
+請以原始分檔作為主要維護來源。
+
+
+---
+
+# SOURCE: 03_nearby_facilities/00_MODULE_OVERVIEW.txt
 
 # NEARBY FACILITIES MODULE｜周邊機能模組
 
@@ -27,12 +33,28 @@
 ## 標準輸入
 
 - address：地址
-- latitude：緯度
-- longitude：經度
+- lat：緯度
+- lng：經度
 - coordinate_source：座標來源，例如使用者提供 / Google Maps / API 轉換
 - coordinate_confirmation_status：未確認 / 已確認
-- radius：查詢半徑，預設 1000 公尺
-- categories：學校、交通、採買、公園、醫療、餐飲、便利商店、金融
+- radius：查詢半徑，預設 500 公尺
+- categories：school、transport、shopping、park、medical（預設一次查詢五種固定類別）
+
+
+## API 類別限制
+
+目前周邊機能 API 固定支援以下 categories：
+
+- school：教育 / 學校
+- transport：交通
+- shopping：採買
+- park：公園 / 休閒
+- medical：醫療
+
+每次呼叫 API 預設一次查詢五種固定 categories：school、transport、shopping、park、medical。
+不得自行加入 food、finance 或其他未支援分類，除非 API 已更新並同步修改 OpenAPI 與本 Knowledge。
+
+餐飲、金融、便利商店等內容，只有在使用者提供資料、API 實際回傳或另有已確認來源時，才可作為補充文案整理，不得當成 API 固定查詢類別。
 
 ## 標準輸出
 
@@ -66,9 +88,9 @@
 「我目前有地址與座標後，才能穩定查詢周邊機能。請確認這組座標是否正確，確認後我再整理生活機能清單或資訊卡文案。」
 
 
-==============================
-檔案：03_nearby_facilities/01_COORDINATE_POLICY.txt
-==============================
+---
+
+# SOURCE: 03_nearby_facilities/01_COORDINATE_POLICY.txt
 
 # COORDINATE POLICY｜地址與經緯度規則
 
@@ -81,8 +103,8 @@
 
 範例：
 
-地址：彰化縣埔心鄉中山路143號  
-座標：23.940380, 120.559760
+地址：彰化縣員林市中山南路8號  
+座標：23.9560419, 120.5709458
 
 ## 為什麼需要座標
 
@@ -114,9 +136,9 @@
 
 接受格式：
 
-- `23.940380, 120.559760`
-- `23.940380 120.559760`
-- `緯度 23.940380，經度 120.559760`
+- `23.9560419, 120.5709458`
+- `23.9560419 120.5709458`
+- `緯度 23.9560419，經度 120.5709458`
 
 ## 台灣座標合理範圍
 
@@ -133,7 +155,7 @@ Google Maps 常見格式為：
 
 例如：
 
-23.940380, 120.559760
+23.9560419, 120.5709458
 
 判斷方式：
 
@@ -158,9 +180,9 @@ Google Maps 常見格式為：
 - 不得將座標查詢結果寫成絕對精準距離。
 
 
-==============================
-檔案：03_nearby_facilities/02_FACILITY_CATEGORY_RULES.txt
-==============================
+---
+
+# SOURCE: 03_nearby_facilities/02_FACILITY_CATEGORY_RULES.txt
 
 # FACILITY CATEGORY RULES｜周邊機能分類規則
 
@@ -170,6 +192,23 @@ Google Maps 常見格式為：
 不得自行創造設施名稱、距離、學區、商圈或交通節點。
 
 若 API 查詢結果不足，需如實標示「查詢結果有限」，不得自行補齊。
+
+---
+
+
+## API 固定查詢類別
+
+目前 API 固定支援的查詢類別只有：
+
+- `school`：教育 / 學校
+- `transport`：交通
+- `shopping`：採買
+- `park`：公園 / 休閒
+- `medical`：醫療
+
+每次 API 呼叫預設一次查詢五種固定 categories：school、transport、shopping、park、medical。
+不得將餐飲、金融、便利商店等分類當成 API 固定支援類別，除非 API 已更新。
+若使用者提供餐飲、金融或便利商店資訊，可放入補充整理，但必須標示其資料來源。
 
 ---
 
@@ -377,9 +416,9 @@ Google Maps 常見格式為：
 用 2 到 4 句整理，不誇大、不保證，以現場確認為準。
 
 
-==============================
-檔案：03_nearby_facilities/03_NEARBY_OUTPUT_TEMPLATE.txt
-==============================
+---
+
+# SOURCE: 03_nearby_facilities/03_NEARBY_OUTPUT_TEMPLATE.txt
 
 # NEARBY OUTPUT TEMPLATE｜周邊機能輸出模板
 
@@ -391,7 +430,7 @@ Google Maps 常見格式為：
 - 座標：
 - 座標來源：
 - 座標確認狀態：
-- 查詢半徑：約 1000 公尺
+- 查詢半徑：約 500 公尺
 - 資料來源：使用者提供資料 / API 查詢結果 / 其他已確認來源
 
 ### 交通
@@ -436,7 +475,7 @@ Google Maps 常見格式為：
 
 主標：周邊生活機能整理
 
-副標：以物件周邊約 1000 公尺生活圈初步整理
+副標：以物件周邊約 500 公尺生活圈初步整理
 
 區塊：
 
@@ -509,3 +548,4 @@ Google Maps 常見格式為：
 - 保證人流
 - 穩定收租
 - 未經查證的商圈名稱、建設、學區或設施
+

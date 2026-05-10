@@ -77,7 +77,8 @@
 完成周邊機能 API 串接。
 API endpoint：https://real-estate-nearby-api.vercel.app/api/nearby-facilities
 支援分類：school、transport、shopping、park、medical
-限制：每次最多查詢 2 種 categories
+限制：預設一次查詢 school、transport、shopping、park、medical 五種 categories
+Request 欄位：address、lat、lng、radius、categories
 新增 summary 欄位，供 GPT Actions 直接回覆使用。
 
 ## 注意事項
@@ -380,3 +381,18 @@ GitHub
 ```txt
 Autonomous Real Estate Content Agent System
 ```
+
+
+## v0.2.3｜GitHub Knowledge 修正版
+
+本版修正重點：
+
+- 同步 v0.2.2 銷售圖卡修正：FB圖文 = 先圖卡後文案。
+- 新增三段式圖片生成流程：資料確認 → 產圖設定 → 圖片生成。
+- 新增短版產圖摘要與產圖失敗降級機制。
+- 補強名片、人物照片與 QR Code 條件式使用規則。
+- 新增 `02_sales_generator/23_ERROR_CASES.txt`。
+- 修正 `merged_upload_files`，確保 `02_SALES_GENERATOR_MASTER.txt` 與 `08_API_ACTIONS_MASTER.txt` 正確合併，不是空檔。
+- 統一周邊機能 API 欄位為 `lat` / `lng`。
+- 周邊機能 API categories 固定支援：`school`、`transport`、`shopping`、`park`、`medical`，預設一次查詢五種固定類別。
+- API 只回傳文字規則與查詢資料，不產圖、不合成圖、不輸出 PNG / PDF。

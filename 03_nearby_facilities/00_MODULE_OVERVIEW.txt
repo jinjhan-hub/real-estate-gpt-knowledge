@@ -23,12 +23,28 @@
 ## 標準輸入
 
 - address：地址
-- latitude：緯度
-- longitude：經度
+- lat：緯度
+- lng：經度
 - coordinate_source：座標來源，例如使用者提供 / Google Maps / API 轉換
 - coordinate_confirmation_status：未確認 / 已確認
-- radius：查詢半徑，預設 1000 公尺
-- categories：學校、交通、採買、公園、醫療、餐飲、便利商店、金融
+- radius：查詢半徑，預設 500 公尺
+- categories：school、transport、shopping、park、medical（預設一次查詢五種固定類別）
+
+
+## API 類別限制
+
+目前周邊機能 API 固定支援以下 categories：
+
+- school：教育 / 學校
+- transport：交通
+- shopping：採買
+- park：公園 / 休閒
+- medical：醫療
+
+每次呼叫 API 預設一次查詢五種固定 categories：school、transport、shopping、park、medical。
+不得自行加入 food、finance 或其他未支援分類，除非 API 已更新並同步修改 OpenAPI 與本 Knowledge。
+
+餐飲、金融、便利商店等內容，只有在使用者提供資料、API 實際回傳或另有已確認來源時，才可作為補充文案整理，不得當成 API 固定查詢類別。
 
 ## 標準輸出
 

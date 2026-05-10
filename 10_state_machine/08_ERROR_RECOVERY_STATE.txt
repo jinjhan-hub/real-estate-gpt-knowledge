@@ -1,25 +1,50 @@
-# ERROR RECOVERY STATE
+# ERROR RECOVERY STATE｜錯誤恢復狀態
 
 STATE:
 
 - ERROR_DETECTED
 - RECOVERY_REQUIRED
+- SIMPLIFIED_RETRY_REQUIRED
 - RECOVERY_COMPLETED
 
-規則：
+## 觸發條件
 
 若發現：
 
 - 缺少資料
 - 錯誤資料
 - 圖片生成失敗
+- 圖片生成卡住
+- 圖片生成空白或中斷
 - 流程跳步
 - 聯絡資訊錯誤
+- QR Code 錯誤
+- 人物生成錯誤
 
-則：
+則進入：ERROR_DETECTED
 
-進入：
-ERROR_DETECTED
+## 一般錯誤處理
 
-需優先修復錯誤，
-不得直接繼續生成。
+需優先修復錯誤，不得直接繼續生成。
+
+若錯誤屬於資料缺漏，應請使用者補充。
+
+若錯誤屬於名片、電話、證號或 QR Code 不清楚，應標示待確認，不得猜測。
+
+## 圖片生成卡住處理
+
+若圖片生成卡住、失敗、空白、中斷，或使用者回覆「你卡住了」，進入：SIMPLIFIED_RETRY_REQUIRED
+
+處理規則：
+
+1. 不得重複使用原本複雜提示詞。
+2. 改用簡化版產圖模式。
+3. 一次只生成一張圖片。
+4. 不放人物。
+5. 不放 QR Code。
+6. 不放大量小字。
+7. 不放未確認生活機能。
+8. 只保留主標、副標、價格、基本規格與 3 個賣點。
+9. 詳細內容移至社群文案。
+
+完成後進入：RECOVERY_COMPLETED

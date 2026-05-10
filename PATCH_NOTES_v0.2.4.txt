@@ -1,0 +1,17 @@
+# PATCH NOTES v0.2.4
+
+本版僅調整周邊機能 API 與 Knowledge 規則，其餘模組不變。
+
+## 修改內容
+
+- 周邊機能 API 預設查詢半徑由 1000 公尺改為 500 公尺。
+- 周邊機能 API 預設一次查詢五種固定 categories：school、transport、shopping、park、medical。
+- API 範例地址改為：彰化縣員林市中山南路8號。
+- API 範例座標改為：23.9560419, 120.5709458。
+- 同步更新 03_nearby_facilities、08_api_actions、README、manifest 與 merged_upload_files。
+
+## 不變內容
+
+- API 仍只回傳資料與文字規則，不負責產圖。
+- 不新增 food、finance 或其他未支援 categories。
+- GPT 仍不得自行補未查詢或未確認的周邊設施。

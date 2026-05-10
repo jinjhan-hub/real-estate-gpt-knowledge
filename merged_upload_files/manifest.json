@@ -1,8 +1,8 @@
 {
   "project": "real_estate_gpt_knowledge_db",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "language": "zh-Hant-TW",
-  "purpose": "供房仲 GPTs / GitHub Knowledge / 外部 RAG 使用的模組化資料庫檔案；本版聚焦銷售圖卡、社群文案、周邊機能、格局圖、房市觀點、稅務試算器與 API / OpenAPI 模組",
+  "purpose": "供房仲 GPTs / GitHub Knowledge / 外部 RAG 使用的模組化資料庫檔案；本版聚焦銷售圖卡、社群文案、周邊機能、格局圖、房市觀點、稅務試算器與 API / OpenAPI 模組，並補強 FB圖文任務分流、三段式圖片生成流程、名片 / QR Code / 人物條件式使用規則，以及周邊機能 API 欄位一致性與預設查詢範圍。",
   "principles": [
     "Instructions 放全域硬限制與流程控制",
     "Knowledge 放可替換、可擴充、可調用的規則、模板、風格與案例",
@@ -35,7 +35,11 @@
         "Threads文案",
         "物件資料",
         "名片",
-        "房屋照片"
+        "房屋照片",
+        "FB圖文",
+        "QR Code",
+        "人物照片",
+        "銷售圖卡卡住"
       ]
     },
     {
@@ -110,6 +114,16 @@
   "change_log": [
     "v0.2.0：刪除 persona_shanshan 模組。",
     "v0.2.0：清除索引、路由表、變數表與主控 Instructions 中已不使用的觸發與流程。",
-    "v0.2.1：補強 loader order、模組 trigger 與全域確認流程對應。"
+    "v0.2.1：補強 loader order、模組 trigger 與全域確認流程對應。",
+    "v0.2.2：補強 FB圖文 = 先圖卡後文案的任務分流規則。",
+    "v0.2.2：新增三段式圖片生成流程、短版產圖摘要與產圖失敗降級機制。",
+    "v0.2.2：補強名片、QR Code、人物照片的條件式使用規則。",
+    "v0.2.2：新增銷售圖卡錯誤案例檔 02_sales_generator/23_ERROR_CASES.txt。",
+    "v0.2.3：修正 GitHub merged_upload_files 合併檔，確保銷售與 API master 檔不為空且與分檔同步。",
+    "v0.2.3：統一周邊機能 API Request 欄位為 lat / lng，並限制 categories 為 school、transport、shopping、park、medical。",
+    "v0.2.3：修正銷售模組總覽，明確區分 FB圖文、IG圖文、銷售圖卡與純文案任務。",
+    "v0.2.3：補強正式銷售圖卡 QR Code 後製規則與單張 / 多張輪播分批生成原則。",
+    "v0.2.4：周邊機能 API 預設改為一次查詢 school、transport、shopping、park、medical 五種 categories，查詢半徑預設 500 公尺。",
+    "v0.2.4：周邊機能 API 範例改為彰化縣員林市中山南路8號，座標 23.9560419, 120.5709458。"
   ]
 }

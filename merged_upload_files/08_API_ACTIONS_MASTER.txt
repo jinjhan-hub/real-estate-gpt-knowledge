@@ -1,6 +1,12 @@
-==============================
-檔案：08_api_actions/00_API_ACTIONS_OVERVIEW.txt
-==============================
+# API ACTIONS MASTER｜API 與 Actions 合併檔
+
+本檔由分檔自動合併，供 GPTs Knowledge 上傳使用。
+請以原始分檔作為主要維護來源。
+
+
+---
+
+# SOURCE: 08_api_actions/00_API_ACTIONS_OVERVIEW.txt
 
 # API ACTIONS OVERVIEW｜API / OpenAPI / Vercel Actions 規則
 
@@ -143,7 +149,7 @@
 
 回覆：
 
-「座標格式可能有誤，請確認是否為緯度、經度，例如 23.940380, 120.559760。」
+「座標格式可能有誤，請確認是否為緯度、經度，例如 23.9560419, 120.5709458。」
 
 ### 4. API 查無資料
 
@@ -171,9 +177,9 @@ API 結果輸出給使用者時，需整理成可讀格式，例如：
 不要直接把原始 JSON 丟給一般使用者，除非使用者明確要求看 API 回傳資料。
 
 
-==============================
-檔案：08_api_actions/01_NEARBY_API_CONTRACT.txt
-==============================
+---
+
+# SOURCE: 08_api_actions/01_NEARBY_API_CONTRACT.txt
 
 # NEARBY API CONTRACT｜周邊機能 API 契約
 
@@ -186,39 +192,68 @@ API 結果輸出給使用者時，需整理成可讀格式，例如：
 
 ---
 
+## API 定位
+
+- API 只負責查詢與回傳周邊機能資料。
+- API 不負責圖片生成、圖片合成、PNG 輸出或 PDF 輸出。
+- GPTs 取得 API 回傳後，負責整理成清單、資訊卡文案或銷售圖卡可用短句。
+
+---
+
 ## Request Body
 
 ```json
 {
-  "address": "彰化縣埔心鄉中山路143號",
-  "latitude": 23.940380,
-  "longitude": 120.559760,
-  "radius": 1000,
-  "categories": ["transport", "school", "shopping", "park", "medical", "food", "finance"]
+  "address": "彰化縣員林市中山南路8號",
+  "lat": 23.9560419,
+  "lng": 120.5709458,
+  "radius": 500,
+  "categories": ["school", "transport", "shopping", "park", "medical"]
 }
 ```
 
 ## 欄位說明
 
-- `address`：使用者提供地址
-- `latitude`：緯度
-- `longitude`：經度
-- `radius`：查詢半徑，單位公尺，預設 1000
-- `categories`：查詢類別
+- `address`：使用者提供地址。
+- `lat`：緯度。
+- `lng`：經度。
+- `radius`：查詢半徑，單位公尺，預設 500。
+- `categories`：查詢類別，預設一次查詢五種固定類別：school、transport、shopping、park、medical。
+
+不得使用 `latitude` / `longitude` 作為 request 欄位，除非 Vercel API 與 OpenAPI 已同步改版。
+
+---
 
 ## categories 固定類別
 
-固定使用英文類別，避免 API 接收中文造成錯誤：
+固定使用英文類別，避免 API 接收中文造成錯誤。
 
+目前支援：
+
+- `school`：教育 / 學校
 - `transport`：交通
-- `school`：教育
 - `shopping`：採買
-- `park`：休閒 / 公園
+- `park`：公園 / 休閒
 - `medical`：醫療
-- `food`：餐飲
-- `finance`：金融
+
+目前不列為 API 固定支援類別：
+
+- `food`
+- `finance`
+- `convenience_store`
+- 其他未定義分類
 
 若使用者輸入中文類別，GPT 應先轉換成對應英文類別，再呼叫 API。
+
+中文轉換建議：
+
+- 學校 / 教育 → `school`
+- 交通 / 車站 / 公車 / 交流道 → `transport`
+- 採買 / 市場 / 超市 / 便利商店 → `shopping`
+- 公園 / 休閒 / 綠地 → `park`
+- 醫療 / 診所 / 醫院 / 藥局 → `medical`
+
+預設一次查詢五種固定分類：school、transport、shopping、park、medical。若使用者明確只要求部分分類，可只帶入該部分固定類別；若使用者要求固定支援類別以外的分類，需先說明 API 尚未支援。
 
 ---
 
@@ -226,13 +261,14 @@ API 結果輸出給使用者時，需整理成可讀格式，例如：
 
 API 應檢查：
 
-- `address` 是否存在
-- `latitude` 是否為數字
-- `longitude` 是否為數字
-- `latitude` 是否落在台灣合理緯度範圍，約 21 至 26
-- `longitude` 是否落在台灣合理經度範圍，約 119 至 123
-- `radius` 是否為正數
-- `categories` 是否為支援類別
+- `address` 是否存在。
+- `lat` 是否為數字。
+- `lng` 是否為數字。
+- `lat` 是否落在台灣合理緯度範圍，約 21 至 26。
+- `lng` 是否落在台灣合理經度範圍，約 119 至 123。
+- `radius` 是否為正數。
+- `categories` 是否為支援類別。
+- `categories` 是否包含未支援類別。
 
 若資料不完整，API 應回傳錯誤訊息，不應假裝查詢成功。
 
@@ -243,12 +279,12 @@ API 應檢查：
 ```json
 {
   "query_status": "success",
-  "address": "彰化縣埔心鄉中山路143號",
+  "address": "彰化縣員林市中山南路8號",
   "center": {
-    "latitude": 23.940380,
-    "longitude": 120.559760
+    "lat": 23.9560419,
+    "lng": 120.5709458
   },
-  "radius": 1000,
+  "radius": 500,
   "distance_type": "straight_line_estimate",
   "facilities": [
     {
@@ -259,6 +295,7 @@ API 應檢查：
       "source": "overpass"
     }
   ],
+  "summary": "周邊採買與交通設施可作為生活圈參考，距離為依座標粗估。",
   "notes": [
     "距離為依座標估算，實際路線與時間仍需依地圖導航及現場狀況為準。"
   ]
@@ -274,12 +311,12 @@ API 應檢查：
 ```json
 {
   "query_status": "partial",
-  "address": "彰化縣埔心鄉中山路143號",
+  "address": "彰化縣員林市中山南路8號",
   "center": {
-    "latitude": 23.940380,
-    "longitude": 120.559760
+    "lat": 23.9560419,
+    "lng": 120.5709458
   },
-  "radius": 1000,
+  "radius": 500,
   "distance_type": "straight_line_estimate",
   "facilities": [
     {
@@ -290,7 +327,7 @@ API 應檢查：
       "source": "overpass"
     }
   ],
-  "missing_categories": ["medical", "finance"],
+  "missing_categories": ["medical"],
   "notes": [
     "部分分類查詢結果有限，未列出的設施不代表實際不存在。"
   ]
@@ -318,6 +355,26 @@ API 應檢查：
   "query_status": "error",
   "error_code": "INVALID_COORDINATES",
   "message": "座標格式可能有誤，請確認是否為緯度、經度。"
+}
+```
+
+### 分類超出固定支援範圍
+
+```json
+{
+  "query_status": "error",
+  "error_code": "UNSUPPORTED_CATEGORY_SCOPE",
+  "message": "目前固定支援 categories 為 school、transport、shopping、park、medical；請移除未支援分類後再查詢。"
+}
+```
+
+### 不支援的分類
+
+```json
+{
+  "query_status": "error",
+  "error_code": "UNSUPPORTED_CATEGORY",
+  "message": "包含 API 尚未支援的 categories，請改用 school、transport、shopping、park 或 medical。"
 }
 ```
 
@@ -361,6 +418,7 @@ API 回傳後，GPT 不直接丟 JSON 給一般使用者。
 - 不得把「附近有學校」寫成「明星學區」。
 - 不得把「附近有商家」寫成「成熟商圈」，除非另有資料依據。
 - 不得在 `query_status` 為 `error` 或 `empty` 時，輸出完整周邊機能清單。
+- 不得使用 `food`、`finance` 等未支援 categories 呼叫 API。
 
 ## GPT 建議輸出格式
 
@@ -368,7 +426,7 @@ API 回傳後，GPT 不直接丟 JSON 給一般使用者。
 
 地址：  
 座標：  
-查詢半徑：約 1000 公尺  
+查詢半徑：約 500 公尺  
 距離說明：依座標粗估，實際路線仍需以地圖導航與現場為準。
 
 ### 交通
@@ -386,21 +444,15 @@ API 回傳後，GPT 不直接丟 JSON 給一般使用者。
 ### 醫療
 - 設施名稱：約 X 公尺
 
-### 餐飲
-- 設施名稱：約 X 公尺
-
-### 金融
-- 設施名稱：約 X 公尺
-
 【生活圈觀察】
 
 從目前查詢結果來看，＿＿＿＿。  
 實際生活便利性仍建議搭配現場路線、停車條件與使用需求確認。
 
 
-==============================
-檔案：08_api_actions/02_GITHUB_KNOWLEDGE_LOADER_RULES.txt
-==============================
+---
+
+# SOURCE: 08_api_actions/02_GITHUB_KNOWLEDGE_LOADER_RULES.txt
 
 # GITHUB KNOWLEDGE LOADER RULES｜GitHub Knowledge 載入規則
 
@@ -442,7 +494,7 @@ API 回傳後，GPT 不直接丟 JSON 給一般使用者。
 
 應依任務載入：
 
-- 銷售圖卡 / 文案 → `02_sales_generator/`
+- 銷售圖卡 / FB圖文 / IG圖文 / 文案 → `02_sales_generator/`
 - 周邊機能 → `03_nearby_facilities/`
 - 手繪格局圖 → `04_floorplan_converter/`
 - 房市觀點文 → `06_market_content/`
@@ -568,6 +620,7 @@ Knowledge 不是為了讓每個輸出完全一樣。
 
 正常任務中，應將 Knowledge 轉換成：
 
+- 短版產圖摘要
 - 可執行流程
 - 清楚問題
 - 整理後資料
@@ -575,3 +628,20 @@ Knowledge 不是為了讓每個輸出完全一樣。
 - 圖卡規格
 - API 規格
 - 開發建議
+
+---
+
+## 圖片生成相關載入原則
+
+若任務為銷售圖卡、FB圖文或 IG圖文，優先載入以下檔案：
+
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
+- `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
+- `02_sales_generator/05_STYLE_LIBRARY.txt`
+- `02_sales_generator/23_ERROR_CASES.txt`
+
+API 只回傳文字規則，不產圖、不合成圖、不輸出 PNG 或 PDF。
+
+圖片生成前，GPTs 應將 API 回傳內容濃縮成短版產圖摘要，避免將整包 Knowledge 直接放進產圖階段。
+

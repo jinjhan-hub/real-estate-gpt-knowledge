@@ -1,0 +1,18 @@
+# PATCH NOTES｜v0.2.3 GitHub Knowledge 修正版
+
+本版由目前 GitHub v0.2.1 版本修正而來。
+
+主要處理：
+
+1. 合併 v0.2.2 銷售圖卡修正。
+2. 新增 `02_sales_generator/23_ERROR_CASES.txt`。
+3. 修正 `merged_upload_files`，避免 master 檔空白或與分檔不同步。
+4. 統一周邊機能 API request 欄位為 `lat` / `lng`。
+5. categories 限制為 `school`、`transport`、`shopping`、`park`、`medical`。本條已由 v0.2.4 更新為預設一次查詢五種固定 categories，半徑 500 公尺。
+6. 補強正式銷售圖卡 QR Code 後製規則。
+7. 補強單張圖片優先、多張輪播分批生成原則。
+
+未處理：
+
+- 尚未重寫 GPTs Instructions。
+- 尚未修改 OpenAPI schema；若目前 GPT Actions schema 仍使用 latitude / longitude，需另行同步。

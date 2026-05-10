@@ -1,6 +1,12 @@
-==============================
-檔案：06_market_content/00_MARKET_CONTENT_RULES.txt
-==============================
+# MARKET CONTENT MASTER｜房市觀點合併檔
+
+本檔由分檔自動合併，供 GPTs Knowledge 上傳使用。
+請以原始分檔作為主要維護來源。
+
+
+---
+
+# SOURCE: 06_market_content/00_MARKET_CONTENT_RULES.txt
 
 # MARKET CONTENT RULES｜房市新聞與市場觀點規則
 
@@ -194,9 +200,9 @@
 - 市場一定會崩
 
 
-==============================
-檔案：06_market_content/01_FB_ANALYSIS_STRUCTURE.txt
-==============================
+---
+
+# SOURCE: 06_market_content/01_FB_ANALYSIS_STRUCTURE.txt
 
 # FB ANALYSIS STRUCTURE｜FB 房市觀點文結構
 
@@ -340,9 +346,9 @@ CTA 不得保證成交、貸款、節稅或投資結果。
 市場變動時，最重要的不是急著下判斷，而是先知道自己屬於哪一種買方。
 
 
-==============================
-檔案：06_market_content/02_THREADS_STRUCTURE.txt
-==============================
+---
+
+# SOURCE: 06_market_content/02_THREADS_STRUCTURE.txt
 
 # THREADS STRUCTURE｜Threads 房市短文規則
 
@@ -505,9 +511,9 @@ Threads 的 CTA 不要太像銷售。
 - 保證幫你找到
 
 
-==============================
-檔案：06_market_content/03_FACT_CHECK_RULES.txt
-==============================
+---
+
+# SOURCE: 06_market_content/03_FACT_CHECK_RULES.txt
 
 # FACT CHECK RULES｜房市資料查證規則
 

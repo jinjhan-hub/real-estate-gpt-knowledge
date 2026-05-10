@@ -9,6 +9,23 @@
 
 ---
 
+
+## API 固定查詢類別
+
+目前 API 固定支援的查詢類別只有：
+
+- `school`：教育 / 學校
+- `transport`：交通
+- `shopping`：採買
+- `park`：公園 / 休閒
+- `medical`：醫療
+
+每次 API 呼叫預設一次查詢五種固定 categories：school、transport、shopping、park、medical。
+不得將餐飲、金融、便利商店等分類當成 API 固定支援類別，除非 API 已更新。
+若使用者提供餐飲、金融或便利商店資訊，可放入補充整理，但必須標示其資料來源。
+
+---
+
 ## 固定分類
 
 ### 交通

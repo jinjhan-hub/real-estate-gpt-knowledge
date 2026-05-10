@@ -38,7 +38,7 @@
 
 應依任務載入：
 
-- 銷售圖卡 / 文案 → `02_sales_generator/`
+- 銷售圖卡 / FB圖文 / IG圖文 / 文案 → `02_sales_generator/`
 - 周邊機能 → `03_nearby_facilities/`
 - 手繪格局圖 → `04_floorplan_converter/`
 - 房市觀點文 → `06_market_content/`
@@ -164,6 +164,7 @@ Knowledge 不是為了讓每個輸出完全一樣。
 
 正常任務中，應將 Knowledge 轉換成：
 
+- 短版產圖摘要
 - 可執行流程
 - 清楚問題
 - 整理後資料
@@ -171,3 +172,19 @@ Knowledge 不是為了讓每個輸出完全一樣。
 - 圖卡規格
 - API 規格
 - 開發建議
+
+---
+
+## 圖片生成相關載入原則
+
+若任務為銷售圖卡、FB圖文或 IG圖文，優先載入以下檔案：
+
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
+- `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
+- `02_sales_generator/05_STYLE_LIBRARY.txt`
+- `02_sales_generator/23_ERROR_CASES.txt`
+
+API 只回傳文字規則，不產圖、不合成圖、不輸出 PNG 或 PDF。
+
+圖片生成前，GPTs 應將 API 回傳內容濃縮成短版產圖摘要，避免將整包 Knowledge 直接放進產圖階段。

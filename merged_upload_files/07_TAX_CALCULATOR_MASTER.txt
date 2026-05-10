@@ -1,6 +1,12 @@
-==============================
-檔案：07_tax_calculator/00_TAX_CALCULATOR_OVERVIEW.txt
-==============================
+# TAX CALCULATOR MASTER｜稅務試算合併檔
+
+本檔由分檔自動合併，供 GPTs Knowledge 上傳使用。
+請以原始分檔作為主要維護來源。
+
+
+---
+
+# SOURCE: 07_tax_calculator/00_TAX_CALCULATOR_OVERVIEW.txt
 
 # TAX CALCULATOR OVERVIEW｜稅務試算器總覽
 
@@ -94,9 +100,9 @@
 「本工具僅供初步試算與教學參考，實際稅額、適用稅率、免稅條件與申報結果，仍需依主管機關、稅捐機關或專業人士認定為準。」
 
 
-==============================
-檔案：07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt
-==============================
+---
+
+# SOURCE: 07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt
 
 # HOUSE-LAND TRANSACTION TAX RULES｜房地合一稅試算器規格
 
@@ -326,9 +332,9 @@
 - 不得直接假設官方試算工具錯誤。
 
 
-==============================
-檔案：07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt
-==============================
+---
+
+# SOURCE: 07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt
 
 # LAND VALUE INCREMENT TAX RULES｜土地增值稅試算器規格
 
@@ -501,9 +507,9 @@
 - 不得在未確認欄位完整時輸出正式試算結果。
 
 
-==============================
-檔案：07_tax_calculator/03_PRINT_AND_UI_RULES.txt
-==============================
+---
+
+# SOURCE: 07_tax_calculator/03_PRINT_AND_UI_RULES.txt
 
 # PRINT AND UI RULES｜列印與介面規格
 
