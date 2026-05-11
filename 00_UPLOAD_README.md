@@ -19,8 +19,4 @@
 
 將銷售圖卡與社群文案規則拆成「平台、尺寸、風格、流程」四條線，降低一次性載入過多提示詞造成的 context 汙染與圖片生成卡住問題。
 
-## 注意
 
-GitHub 網頁版通常不會自動解壓 ZIP。請先在電腦解壓後，再整批拖拉資料夾與檔案上傳。
-
-本 ZIP 只更新 Knowledge 檔案，不會自動修改 Vercel API 程式碼。若你的 API 目前只支援 `module=sales_generator&section=舊檔名`，短期仍可用相容舊檔；要完全發揮精準調用效果，後續需再更新 Vercel loader 讓它支援 platform / ratio / style / stage 參數。
