@@ -1,0 +1,209 @@
+# GRANULAR SALES ROUTER｜銷售圖卡精準調用規則
+
+## 目的
+
+把銷售圖卡與社群文案任務拆成四個可判斷變數：
+
+- platform：平台
+- ratio：圖卡比例
+- style：風格
+- stage：流程階段
+
+避免一次載入整個 `02_sales_generator/` 造成 context 汙染、平台混用、風格混用與圖片生成卡住。
+
+---
+
+## 1. platform 對應
+
+### FB
+
+觸發詞：
+
+- FB
+- Facebook
+- 臉書
+- FB貼文
+- FB圖文
+- FB文案
+
+載入：
+
+- `02_sales_generator/platforms/FB_RULES.txt`
+- `02_sales_generator/templates/FB_TEMPLATE.txt`
+- `02_sales_generator/hooks/FB_HOOK_LIBRARY.txt`（需要開頭句時才載入）
+
+### IG
+
+觸發詞：
+
+- IG
+- Instagram
+- IG圖文
+- IG文案
+- 貼文輪播
+
+載入：
+
+- `02_sales_generator/platforms/IG_RULES.txt`
+- `02_sales_generator/templates/IG_TEMPLATE.txt`
+- `02_sales_generator/hooks/IG_HOOK_LIBRARY.txt`（需要開頭句時才載入）
+- `02_sales_generator/libraries/HASHTAG_RULES.txt`（需要 hashtag 時才載入）
+
+### Threads
+
+觸發詞：
+
+- Threads
+- Threads文案
+- 短文
+- 互動貼文
+
+載入：
+
+- `02_sales_generator/platforms/THREADS_RULES.txt`
+- `02_sales_generator/templates/THREADS_TEMPLATE.txt`
+- `02_sales_generator/hooks/THREADS_HOOK_LIBRARY.txt`（需要多則版本時才載入）
+- `02_sales_generator/libraries/OBSERVATION_LIBRARY.txt`
+
+---
+
+## 2. ratio 對應
+
+### 1:1
+
+載入：
+
+- `02_sales_generator/sizes/RATIO_1_1.txt`
+
+### 4:5
+
+載入：
+
+- `02_sales_generator/sizes/RATIO_4_5.txt`
+
+### 9:16
+
+載入：
+
+- `02_sales_generator/sizes/RATIO_9_16.txt`
+
+### 限時動態 9:16
+
+載入：
+
+- `02_sales_generator/sizes/RATIO_STORY_9_16.txt`
+
+---
+
+## 3. style 對應
+
+### 投資理性感
+
+觸發詞：投資、收租、置產、理性、數字、報酬、地段價值
+
+載入：
+
+- `02_sales_generator/styles/INVEST_STYLE.txt`
+
+### 自住溫暖感
+
+觸發詞：自住、溫馨、自住溫暖、家庭、換屋、生活感、安心、回家感
+
+載入：
+
+- `02_sales_generator/styles/WARM_HOME_STYLE.txt`
+
+### 首購友善感
+
+觸發詞：首購、新手買房、小資、第一次買房、入門、輕鬆懂
+
+載入：
+
+- `02_sales_generator/styles/FIRST_BUYER_STYLE.txt`
+
+### 高質感精品感
+
+觸發詞：精品、高質感、豪宅、質感、稀有、品味、現代感
+
+載入：
+
+- `02_sales_generator/styles/LUXURY_STYLE.txt`
+
+### 極簡乾淨感
+
+觸發詞：極簡、乾淨、簡約、白底、留白、不花俏
+
+載入：
+
+- `02_sales_generator/styles/MINIMAL_STYLE.txt`
+
+---
+
+## 4. stage 對應
+
+### property_confirmation
+
+載入：
+
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
+- `02_sales_generator/workflows/PROPERTY_CONFIRMATION_WORKFLOW.txt`
+
+### image_setting
+
+載入：
+
+- `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
+- 對應 ratio 檔案
+- 對應 style 檔案
+- `02_sales_generator/workflows/IMAGE_SETTING_WORKFLOW.txt`
+
+### image_generation
+
+載入：
+
+- `02_sales_generator/templates/IMAGE_PROMPT_TEMPLATE.txt`
+- `02_sales_generator/templates/SALES_CARD_TEXT_TEMPLATE.txt`
+- `02_sales_generator/workflows/IMAGE_GENERATION_WORKFLOW.txt`
+- `02_sales_generator/errors/IMAGE_GENERATION_FAILSAFE.txt`
+
+### copy_generation
+
+載入：
+
+- 對應 platform 檔案
+- 對應 template 檔案
+- 對應 style 檔案
+- `02_sales_generator/libraries/CTA_LIBRARY.txt`
+- `02_sales_generator/workflows/COPY_GENERATION_WORKFLOW.txt`
+
+### final_review
+
+載入：
+
+- `02_sales_generator/workflows/FINAL_REVIEW_WORKFLOW.txt`
+- `02_sales_generator/libraries/PROHIBITED_WORDS.txt`
+- `02_sales_generator/errors/MISSING_DATA_RESPONSE.txt`
+
+---
+
+## 5. 預設值
+
+若使用者沒有指定平台：
+
+- 銷售圖卡可先問平台。
+- 若使用者只說「銷售圖卡」，可先不載入 platform，只載入 ratio、style、image workflow。
+
+若使用者沒有指定尺寸：
+
+- FB / IG 貼文預設詢問 1:1 或 4:5。
+- 限時動態預設 9:16。
+
+若使用者沒有指定風格：
+
+- 先提供 5 種風格選項，不自行決定。
+
+若使用者同時指定多平台：
+
+- 先完成主平台。
+- 其他平台分批生成，不一次載入全部平台規則。

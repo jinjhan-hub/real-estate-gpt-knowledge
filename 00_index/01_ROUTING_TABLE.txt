@@ -9,24 +9,25 @@
 - API 僅負責回傳文字規則、Prompt 模板、流程規則與錯誤修正規則。
 - API 不負責圖片生成、圖片合成、圖片渲染、PNG 輸出或 PDF 輸出。
 - 所有圖片生成仍由 GPTs 內建圖片生成能力完成。
+- 銷售圖卡任務需優先使用 platform / ratio / style / stage 的精準調用方式。
 
 ---
 
 ## 1. 銷售圖卡 / 社群文案
 
 使用者輸入可能包含：
+
 - 物件資料截圖
 - 房屋照片
 - 名片
 - 指定平台：FB / IG / Threads
 - 指定尺寸：1:1 / 4:5 / 9:16
-- 指定風格：投資理性感、自住溫暖感、首購友善感、高質感精品感
+- 指定風格：投資理性感、自住溫暖感、首購友善感、高質感精品感、極簡乾淨感
 
-### 1-1. 平台任務判斷
+### 1-1. 任務判斷
 
 1. 使用者說「FB貼文」或「FB文案」
-   → 視為只生成 FB 文案。
-   → 不主動生成圖片。
+   → 視為只生成 FB 文案，不主動生成圖片。
 
 2. 使用者說「FB圖文」
    → 視為「FB 銷售圖卡 + FB 貼文文案」。
@@ -37,32 +38,94 @@
    → 執行順序固定為：先生成圖卡，再生成 IG 文案。
 
 4. 使用者說「Threads文案」
-   → 視為只生成 Threads 短文。
-   → 不主動生成圖片。
+   → 視為只生成 Threads 短文，不主動生成圖片。
 
 5. 使用者說「銷售圖卡」
-   → 視為只生成圖片。
-   → 不主動生成 FB / IG / Threads 完整文案。
+   → 視為只生成圖片，不主動生成 FB / IG / Threads 完整文案。
 
 6. 使用者同時提供尺寸，例如 1:1、4:5、9:16，且提到 FB圖文或 IG圖文
    → 優先判斷為需要圖片。
    → 先執行圖卡生成，圖卡完成後再接續生成文案。
 
-### 1-2. 應載入檔案
+### 1-2. 精準載入原則
+
+銷售圖卡任務不再一次載入整個 `02_sales_generator/`。
+
+應依下列四個變數組合檔案：
+
+- platform：fb / ig / threads
+- ratio：1:1 / 4:5 / 9:16
+- style：invest / warm_home / first_buyer / luxury / minimal
+- stage：property_confirmation / image_setting / image_generation / copy_generation / final_review
+
+### 1-3. 銷售圖卡必要載入
 
 若任務為銷售圖卡、FB圖文或 IG圖文，應載入：
+
 - `02_sales_generator/00_MODULE_OVERVIEW.txt`
 - `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
 - `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
 - `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
-- `02_sales_generator/05_STYLE_LIBRARY.txt`
-- `02_sales_generator/23_ERROR_CASES.txt`
+- 對應平台：`02_sales_generator/platforms/{平台}_RULES.txt`
+- 對應尺寸：`02_sales_generator/sizes/RATIO_{尺寸}.txt`
+- 對應風格：`02_sales_generator/styles/{風格}_STYLE.txt`
+- 圖片流程：`02_sales_generator/workflows/IMAGE_SETTING_WORKFLOW.txt`
+- 圖片流程：`02_sales_generator/workflows/IMAGE_GENERATION_WORKFLOW.txt`
+- 圖片模板：`02_sales_generator/templates/IMAGE_PROMPT_TEMPLATE.txt`
+- 圖卡文字模板：`02_sales_generator/templates/SALES_CARD_TEXT_TEMPLATE.txt`
+- 錯誤處理：`02_sales_generator/errors/IMAGE_GENERATION_FAILSAFE.txt`
 
-若任務包含文案，再補讀：
-- `02_sales_generator/04_COPY_PLATFORM_RULES.txt`
-- 對應平台模板：`08_FB_TEMPLATE.txt`、`09_IG_TEMPLATE.txt` 或 `10_THREADS_TEMPLATE.txt`
+### 1-4. 文案任務必要載入
 
-### 1-3. 輸出順序
+若任務只生成文案，不生成圖片，應載入：
+
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- 對應平台：`02_sales_generator/platforms/{平台}_RULES.txt`
+- 對應風格：`02_sales_generator/styles/{風格}_STYLE.txt`
+- 對應模板：`02_sales_generator/templates/{平台}_TEMPLATE.txt`
+- CTA：`02_sales_generator/libraries/CTA_LIBRARY.txt`
+
+IG 文案可加載：
+
+- `02_sales_generator/libraries/HASHTAG_RULES.txt`
+
+Threads 文案可加載：
+
+- `02_sales_generator/libraries/OBSERVATION_LIBRARY.txt`
+
+### 1-5. 使用範例
+
+使用者說：FB + 4:5 + 溫馨自住風
+
+應載入：
+
+- `01_global/00_GLOBAL_HARD_RULES.txt`
+- `01_global/01_CONFIRMATION_FLOW.txt`
+- `01_global/02_FACT_AND_SOURCE_POLICY.txt`
+- `02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt`
+- `02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt`
+- `02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt`
+- `02_sales_generator/platforms/FB_RULES.txt`
+- `02_sales_generator/sizes/RATIO_4_5.txt`
+- `02_sales_generator/styles/WARM_HOME_STYLE.txt`
+- `02_sales_generator/templates/SALES_CARD_TEXT_TEMPLATE.txt`
+- `02_sales_generator/templates/IMAGE_PROMPT_TEMPLATE.txt`
+- `02_sales_generator/libraries/CTA_LIBRARY.txt`
+- `02_sales_generator/workflows/IMAGE_SETTING_WORKFLOW.txt`
+- `02_sales_generator/workflows/IMAGE_GENERATION_WORKFLOW.txt`
+- `02_sales_generator/errors/IMAGE_GENERATION_FAILSAFE.txt`
+
+不得載入：
+
+- IG 規則
+- Threads 規則
+- 其他未指定風格
+- 周邊機能
+- 格局圖
+- 稅務試算
+- 房市新聞觀點文
+
+### 1-6. 輸出順序
 
 1. 整理物件資料。
 2. 請使用者確認資料是否正確。
@@ -71,30 +134,30 @@
 5. 圖片完成後，若使用者原任務是 FB圖文或 IG圖文，再輸出對應文案。
 6. 詢問是否需要改成其他平台版本。
 
-### 1-4. 禁止事項
+### 1-7. 禁止事項
 
 - 不得因為使用者說「FB圖文」就反覆詢問到底要圖片還是文案。
 - 不得在任務尚未分流完成前直接生成圖片。
 - 不得在圖片生成階段同時輸出完整 FB / IG / Threads 文案。
 - 不得將 API 誤用為圖片生成工具。
+- 不得把三個平台規則同時載入。
+- 不得把所有風格同時載入。
 
 ---
 
 ## 2. 周邊機能查詢
 
-使用者輸入包含：
-- 地址
-- 經緯度
-- 周邊機能圖
-- 生活圈整理
+使用者輸入包含：地址、經緯度、周邊機能圖、生活圈整理。
 
 應載入：
+
 - `03_nearby_facilities/00_MODULE_OVERVIEW.txt`
 - `03_nearby_facilities/01_COORDINATE_POLICY.txt`
 - `03_nearby_facilities/02_FACILITY_CATEGORY_RULES.txt`
 - `03_nearby_facilities/03_NEARBY_OUTPUT_TEMPLATE.txt`
 
 輸出順序：
+
 1. 確認地址與座標。
 2. 若只有地址，先請使用者提供 Google Maps 複製的經緯度；若系統具備可用地理工具，才可協助轉換，且必須請使用者確認座標。
 3. 查詢或整理周邊機能。
@@ -105,18 +168,15 @@
 
 ## 3. 手繪格局圖轉平面圖
 
-使用者輸入包含：
-- 手繪圖
-- 要轉成平面圖
-- 要建築圖、簡約圖、彩色圖、3D圖
-
 應載入：
+
 - `04_floorplan_converter/00_MODULE_OVERVIEW.txt`
 - `04_floorplan_converter/01_RECOGNITION_CONFIRMATION_RULES.txt`
 - `04_floorplan_converter/02_GEOMETRY_LOCK_RULES.txt`
 - `04_floorplan_converter/03_FLOORPLAN_STYLE_LIBRARY.txt`
 
 輸出順序：
+
 1. 辨識空間與標示。
 2. 對不清楚處提問。
 3. 使用者確認後才生成。
@@ -127,53 +187,31 @@
 
 ## 4. 房市新聞與政策觀點文
 
-使用者輸入包含：
-- 新聞
-- 政策
-- 信用管制
-- 房貸
-- 報稅
-- 房屋稅
-
 應載入：
+
 - `06_market_content/00_MARKET_CONTENT_RULES.txt`
 - `06_market_content/01_FB_ANALYSIS_STRUCTURE.txt`
 - `06_market_content/02_THREADS_STRUCTURE.txt`
 - `06_market_content/03_FACT_CHECK_RULES.txt`
-
-輸出順序：
-1. 先確認資料來源與日期；涉及最新政策、稅務、貸款、新聞數據時，需查證來源。
-2. 不確定資料保留或標示，不得用確定語氣陳述。
-3. 用「先講結論 → 原因 → 對買方影響 → 自然 CTA」。
-4. 避免像新聞稿。
 
 ---
 
 ## 5. 稅務試算器開發
 
 應載入：
+
 - `07_tax_calculator/00_TAX_CALCULATOR_OVERVIEW.txt`
 - `07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt`
 - `07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt`
 - `07_tax_calculator/03_PRINT_AND_UI_RULES.txt`
-
-輸出順序：
-1. 先釐清是房地合一稅或土地增值稅。
-2. 不直接保證稅額正確，標示試算性質。
-3. 改程式時維持原功能，不任意刪除既有邏輯。
 
 ---
 
 ## 6. API / OpenAPI / Vercel Actions
 
 應載入：
+
 - `08_api_actions/00_API_ACTIONS_OVERVIEW.txt`
 - `08_api_actions/01_NEARBY_API_CONTRACT.txt`
 - `08_api_actions/02_GITHUB_KNOWLEDGE_LOADER_RULES.txt`
-
-輸出順序：
-1. 先確認用途與端點。
-2. 維持 OpenAPI 格式有效。
-3. 若涉及外部 API，清楚定義輸入、輸出與錯誤處理。
-4. 不把 API 回傳外的資料當成事實。
-5. 修改 API 或 OpenAPI 時，不得任意刪除既有欄位、operationId、端點與錯誤處理邏輯。
+- `08_api_actions/03_GRANULAR_SALES_KNOWLEDGE_LOADER.txt`

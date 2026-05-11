@@ -1,61 +1,43 @@
-# 09_IG_TEMPLATE.txt
+# LEGACY COMPATIBILITY FILE｜相容舊路徑
 
-# IG TEMPLATE
+本檔保留舊 section loading 路徑。新建議路徑：`02_sales_generator/templates/IG_TEMPLATE.txt`。
 
-IG 文案不必固定格式。
+# IG TEMPLATE｜IG 圖文文案模板
 
-應依：
+## 輸出格式
 
-- 圖卡內容
-- 物件類型
-- 指定風格
-- 買方需求
-- 圖文搭配情境
+【第一句】
+一句吸睛但不浮誇的開頭。
 
-動態調整：
+【重點】
+3 到 5 個短句亮點。
 
-- 開頭句
-- 條列數量
-- emoji 使用量
-- CTA 長短
-- Hashtags 數量
+【生活感】
+一句生活情境。
 
-IG 文案應比 FB 更短，
-重點是：
+【CTA】
+一句短 CTA。
 
-- 有畫面感
-- 好閱讀
-- 適合搭配圖片
-- 不像房仲制式廣告
+【Hashtags】
+依地區、物件類型、族群生成，避免無關熱門標籤。
 
-可使用：
+## 範本
 
-- IG Hook Library
-- Observation Library
-- Emotional Transition Library
-- CTA Library
-- Hashtag Rules
-- Few-shot Examples
+{一句開頭}
 
-不必每篇固定包含：
+這間的重點：
+✓ {亮點一}
+✓ {亮點二}
+✓ {亮點三}
 
-- 短開頭
-- 三點亮點
-- 一句生活情境
-- 短 CTA
-- Hashtags
+比較適合 {適合族群}。
 
-可依內容自然調整。
+想看完整資料，私訊我。
 
-避免：
+{hashtags}
 
-- 直接把 FB 文案縮短
-- 每篇都固定三個亮點
-- Hashtags 過多
-- emoji 過多
-- 太像銷售DM
+## 注意
 
-目標：
-
-讓 IG 文案像一則自然的圖文說明，
-而不是規格表。
+- 不要把 FB 長文縮短後直接貼上。
+- 不要跟圖卡文字完全重複。
+- Hashtags 不超過 8 到 12 個。

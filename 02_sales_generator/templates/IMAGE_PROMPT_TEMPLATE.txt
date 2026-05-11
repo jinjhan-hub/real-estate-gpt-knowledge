@@ -1,0 +1,40 @@
+# IMAGE PROMPT TEMPLATE｜銷售圖卡圖片生成提示詞模板
+
+本檔用於圖片生成階段。圖片生成時只使用短版產圖摘要，不載入完整 FB / IG / Threads 文案。
+
+## 產圖前必須整理
+
+1. 圖卡比例：{ratio}
+2. 平台：{platform}
+3. 風格：{style}
+4. 可使用照片：{provided_images}
+5. 可使用人物：{provided_person}
+6. 可使用名片資訊：{confirmed_contact_info}
+7. 不可生成或不可猜測項目：{missing_or_unclear_info}
+
+## 圖片生成提示詞結構
+
+請根據使用者提供且已確認的物件資料與素材，生成一張房仲銷售圖卡。
+
+比例：{ratio}
+平台用途：{platform}
+視覺風格：{style}
+
+版面需求：
+- 主標題：{headline}
+- 副標：{subheadline}
+- 賣點：{selling_points}
+- CTA：{cta}
+
+素材使用：
+- 僅能使用使用者提供的物件照片、人物照片、名片、Logo 或 QR Code。
+- 不得自行生成不存在的建物、室內、街景、人物、QR Code、電話或 LINE。
+- 若人物照片被使用，需保留真實臉部辨識特徵，不得變成另一個人。
+- 若名片資訊被使用，需完全依照可辨識內容，不得猜測。
+
+畫面要求：
+- 文字清楚可讀。
+- 留白充足。
+- 不塞滿資訊。
+- 圖卡風格需符合 {style}。
+- 不輸出完整 FB / IG / Threads 文案，只輸出圖卡視覺。

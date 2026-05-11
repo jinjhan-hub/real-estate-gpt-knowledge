@@ -1,25 +1,27 @@
 {
   "project": "real_estate_gpt_knowledge_db",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "language": "zh-Hant-TW",
-  "purpose": "供房仲 GPTs / GitHub Knowledge / 外部 RAG 使用的模組化資料庫檔案；本版聚焦銷售圖卡、社群文案、周邊機能、格局圖、房市觀點、稅務試算器與 API / OpenAPI 模組，並補強 FB圖文任務分流、三段式圖片生成流程、名片 / QR Code / 人物條件式使用規則，以及周邊機能 API 欄位一致性與預設查詢範圍。",
+  "purpose": "供房仲 GPTs / GitHub Knowledge / 外部 RAG 使用的模組化資料庫檔案。本版進一步將 sales_generator 拆成平台、尺寸、風格與 workflow 四條調用線，降低一次性載入提示詞造成的 context 汙染與圖片生成卡住問題。",
   "principles": [
     "Instructions 放全域硬限制與流程控制",
     "Knowledge 放可替換、可擴充、可調用的規則、模板、風格與案例",
     "需要哪個功能才讀取哪個模組，避免一次載入全部內容",
     "不憑空生成未提供的物件資訊、照片、建物、聯絡資訊或法規數字",
-    "使用者資料、圖片、名片、地址、座標、稅務與 API 結果需先確認再輸出正式內容"
+    "使用者資料、圖片、名片、地址、座標、稅務與 API 結果需先確認再輸出正式內容",
+    "銷售圖卡任務需優先依平台、尺寸、風格、流程分別載入檔案"
   ],
   "recommended_loader_order": [
     "manifest.json",
     "00_index/00_PROMPT_INDEX.txt",
     "00_index/01_ROUTING_TABLE.txt",
     "00_index/02_VARIABLE_SCHEMA.txt",
+    "00_index/03_GRANULAR_SALES_ROUTER.txt",
     "01_global/00_GLOBAL_HARD_RULES.txt",
     "01_global/01_CONFIRMATION_FLOW.txt",
     "01_global/02_FACT_AND_SOURCE_POLICY.txt",
     "01_global/03_OUTPUT_STYLE_BASELINE.txt",
-    "依使用者任務載入對應 module"
+    "依使用者任務載入對應 module / platform / ratio / style / stage"
   ],
   "modules": [
     {
@@ -39,7 +41,12 @@
         "FB圖文",
         "QR Code",
         "人物照片",
-        "銷售圖卡卡住"
+        "銷售圖卡卡住",
+        "4:5",
+        "1:1",
+        "9:16",
+        "自住溫暖感",
+        "投資理性感"
       ]
     },
     {
@@ -111,19 +118,71 @@
       ]
     }
   ],
+  "granular_sections": {
+    "sales_generator": {
+      "base": [
+        "02_sales_generator/00_MODULE_OVERVIEW.txt",
+        "02_sales_generator/01_PROPERTY_DATA_EXTRACTION.txt",
+        "02_sales_generator/02_BUSINESS_CARD_EXTRACTION.txt",
+        "02_sales_generator/03_SALES_IMAGE_CARD_RULES.txt"
+      ],
+      "platforms": {
+        "fb": "02_sales_generator/platforms/FB_RULES.txt",
+        "ig": "02_sales_generator/platforms/IG_RULES.txt",
+        "threads": "02_sales_generator/platforms/THREADS_RULES.txt"
+      },
+      "sizes": {
+        "1:1": "02_sales_generator/sizes/RATIO_1_1.txt",
+        "4:5": "02_sales_generator/sizes/RATIO_4_5.txt",
+        "9:16": "02_sales_generator/sizes/RATIO_9_16.txt",
+        "story_9:16": "02_sales_generator/sizes/RATIO_STORY_9_16.txt"
+      },
+      "styles": {
+        "invest": "02_sales_generator/styles/INVEST_STYLE.txt",
+        "warm_home": "02_sales_generator/styles/WARM_HOME_STYLE.txt",
+        "first_buyer": "02_sales_generator/styles/FIRST_BUYER_STYLE.txt",
+        "luxury": "02_sales_generator/styles/LUXURY_STYLE.txt",
+        "minimal": "02_sales_generator/styles/MINIMAL_STYLE.txt"
+      },
+      "templates": {
+        "fb": "02_sales_generator/templates/FB_TEMPLATE.txt",
+        "ig": "02_sales_generator/templates/IG_TEMPLATE.txt",
+        "threads": "02_sales_generator/templates/THREADS_TEMPLATE.txt",
+        "sales_card": "02_sales_generator/templates/SALES_CARD_TEXT_TEMPLATE.txt",
+        "image_prompt": "02_sales_generator/templates/IMAGE_PROMPT_TEMPLATE.txt"
+      },
+      "libraries": {
+        "cta": "02_sales_generator/libraries/CTA_LIBRARY.txt",
+        "hashtags": "02_sales_generator/libraries/HASHTAG_RULES.txt",
+        "observations": "02_sales_generator/libraries/OBSERVATION_LIBRARY.txt",
+        "emotional_transition": "02_sales_generator/libraries/EMOTIONAL_TRANSITION_LIBRARY.txt",
+        "prohibited_words": "02_sales_generator/libraries/PROHIBITED_WORDS.txt"
+      },
+      "workflows": {
+        "property_confirmation": "02_sales_generator/workflows/PROPERTY_CONFIRMATION_WORKFLOW.txt",
+        "image_setting": "02_sales_generator/workflows/IMAGE_SETTING_WORKFLOW.txt",
+        "image_generation": "02_sales_generator/workflows/IMAGE_GENERATION_WORKFLOW.txt",
+        "copy_generation": "02_sales_generator/workflows/COPY_GENERATION_WORKFLOW.txt",
+        "final_review": "02_sales_generator/workflows/FINAL_REVIEW_WORKFLOW.txt"
+      },
+      "errors": {
+        "general": "02_sales_generator/errors/ERROR_CASES.txt",
+        "image_failsafe": "02_sales_generator/errors/IMAGE_GENERATION_FAILSAFE.txt",
+        "missing_data": "02_sales_generator/errors/MISSING_DATA_RESPONSE.txt"
+      }
+    }
+  },
+  "recommended_query_examples": [
+    "/api/knowledge-module?module=sales_generator&platform=fb&ratio=4:5&style=warm_home&stage=image_generation",
+    "/api/knowledge-module?module=sales_generator&platform=ig&style=warm_home&stage=copy_generation",
+    "/api/knowledge-module?module=sales_generator&platform=threads&style=first_buyer&stage=copy_generation"
+  ],
   "change_log": [
     "v0.2.0：刪除 persona_shanshan 模組。",
-    "v0.2.0：清除索引、路由表、變數表與主控 Instructions 中已不使用的觸發與流程。",
     "v0.2.1：補強 loader order、模組 trigger 與全域確認流程對應。",
     "v0.2.2：補強 FB圖文 = 先圖卡後文案的任務分流規則。",
-    "v0.2.2：新增三段式圖片生成流程、短版產圖摘要與產圖失敗降級機制。",
-    "v0.2.2：補強名片、QR Code、人物照片的條件式使用規則。",
-    "v0.2.2：新增銷售圖卡錯誤案例檔 02_sales_generator/23_ERROR_CASES.txt。",
-    "v0.2.3：修正 GitHub merged_upload_files 合併檔，確保銷售與 API master 檔不為空且與分檔同步。",
-    "v0.2.3：統一周邊機能 API Request 欄位為 lat / lng，並限制 categories 為 school、transport、shopping、park、medical。",
-    "v0.2.3：修正銷售模組總覽，明確區分 FB圖文、IG圖文、銷售圖卡與純文案任務。",
-    "v0.2.3：補強正式銷售圖卡 QR Code 後製規則與單張 / 多張輪播分批生成原則。",
-    "v0.2.4：周邊機能 API 預設改為一次查詢 school、transport、shopping、park、medical 五種 categories，查詢半徑預設 500 公尺。",
-    "v0.2.4：周邊機能 API 範例改為彰化縣員林市中山南路8號，座標 23.9560419, 120.5709458。"
+    "v0.2.3：修正 GitHub merged_upload_files 合併檔與周邊機能 API 欄位。",
+    "v0.2.4：周邊機能 API 預設改為一次查詢五種 categories。",
+    "v0.2.5：sales_generator 拆成 platform / ratio / style / workflow 四條線，新增 granular sales router 與圖片生成 failsafe。"
   ]
 }

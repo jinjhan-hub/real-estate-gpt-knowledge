@@ -1,0 +1,34 @@
+{
+  "examples": [
+    {
+      "name": "FB 4:5 自住溫暖感圖卡",
+      "query": "/api/knowledge-module?module=sales_generator&platform=fb&ratio=4:5&style=warm_home&stage=image_generation",
+      "should_load": [
+        "02_sales_generator/platforms/FB_RULES.txt",
+        "02_sales_generator/sizes/RATIO_4_5.txt",
+        "02_sales_generator/styles/WARM_HOME_STYLE.txt",
+        "02_sales_generator/workflows/IMAGE_GENERATION_WORKFLOW.txt"
+      ]
+    },
+    {
+      "name": "IG 自住溫暖感文案",
+      "query": "/api/knowledge-module?module=sales_generator&platform=ig&style=warm_home&stage=copy_generation",
+      "should_load": [
+        "02_sales_generator/platforms/IG_RULES.txt",
+        "02_sales_generator/styles/WARM_HOME_STYLE.txt",
+        "02_sales_generator/templates/IG_TEMPLATE.txt",
+        "02_sales_generator/libraries/HASHTAG_RULES.txt"
+      ]
+    },
+    {
+      "name": "Threads 首購友善感 5 則短文",
+      "query": "/api/knowledge-module?module=sales_generator&platform=threads&style=first_buyer&stage=copy_generation",
+      "should_load": [
+        "02_sales_generator/platforms/THREADS_RULES.txt",
+        "02_sales_generator/styles/FIRST_BUYER_STYLE.txt",
+        "02_sales_generator/templates/THREADS_TEMPLATE.txt",
+        "02_sales_generator/libraries/OBSERVATION_LIBRARY.txt"
+      ]
+    }
+  ]
+}

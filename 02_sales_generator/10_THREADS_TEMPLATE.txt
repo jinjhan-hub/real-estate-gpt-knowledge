@@ -1,61 +1,28 @@
-# 10_THREADS_TEMPLATE.txt
+# LEGACY COMPATIBILITY FILE｜相容舊路徑
 
-# THREADS TEMPLATE
+本檔保留舊 section loading 路徑。新建議路徑：`02_sales_generator/templates/THREADS_TEMPLATE.txt`。
 
-Threads 文案不必固定格式。
+# THREADS TEMPLATE｜Threads 短文模板
 
-應依：
+## 輸出格式
 
-- 物件條件
-- 買方痛點
-- 指定風格
-- 生活觀察
-- 互動目的
+每則短文建議 2 到 4 句。
 
-動態調整：
+1. 第一句：生活觀察或房仲觀點。
+2. 第二句：連到物件條件或買方情境。
+3. 第三句：丟問題或自然 CTA。
 
-- 第一句觀點
-- 段落長短
-- 是否放物件資訊
-- 是否使用條列
-- 結尾互動問題
+## 單則範本
 
-Threads 文案應比 FB 更像日常聊天。
+有些房子不是條件最多，而是剛好符合你每天的生活方式。
 
-重點是：
+像 {物件條件} 這種條件，通常適合 {適合族群} 慢慢比較。
 
-- 有觀點
-- 有生活觀察
-- 不像廣告
-- 不像 FB 縮短版
-- 不一開始硬賣物件
+你看房時最在意的是空間，還是生活機能？
 
-可使用：
+## 5 則版本原則
 
-- Threads Hook Library
-- Observation Library
-- Emotional Transition Library
-- CTA Library
-- Few-shot Examples
-
-不必每篇固定包含：
-
-- 一句觀點
-- 一個生活觀察
-- 一句 CTA
-
-可依內容自然調整。
-
-避免：
-
-- 貼太多物件規格
-- 太像銷售文
-- 太像 FB 摘要
-- hashtag
-- 過度 emoji
-- 每篇都用同樣結尾
-
-目標：
-
-讓 Threads 像一則「看房觀察」或「買方提醒」，
-而不是物件廣告。
+- 每則角度不同。
+- 不要只是改同義詞。
+- 不要都用同一句 CTA。
+- 不要寫成 FB 文案縮短版。

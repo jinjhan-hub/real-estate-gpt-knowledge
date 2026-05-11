@@ -1,0 +1,53 @@
+# GRANULAR SALES KNOWLEDGE LOADER｜銷售模組精準載入 API 規則
+
+## 目標
+
+讓 Vercel API / GPT Actions 可以依 platform、ratio、style、stage 組合必要檔案，而不是一次回傳整個 sales_generator。
+
+## 建議 Endpoint
+
+`GET /api/knowledge-module`
+
+## 建議 Query
+
+```txt
+module=sales_generator
+platform=fb | ig | threads
+ratio=1:1 | 4:5 | 9:16 | story_9:16
+style=invest | warm_home | first_buyer | luxury | minimal
+stage=property_confirmation | image_setting | image_generation | copy_generation | final_review
+```
+
+## 範例
+
+### FB + 4:5 + 自住溫暖感 + 圖片生成
+
+```txt
+/api/knowledge-module?module=sales_generator&platform=fb&ratio=4:5&style=warm_home&stage=image_generation
+```
+
+應回傳：
+
+- 全域硬限制
+- 資料確認規則
+- 銷售圖卡規則
+- FB 平台規則
+- 4:5 尺寸規則
+- 自住溫暖感風格規則
+- 圖片生成 workflow
+- 產圖模板
+- 圖片生成 failsafe
+
+不應回傳：
+
+- IG 規則
+- Threads 規則
+- 其他風格
+- 稅務、格局、周邊機能規則
+
+## 防呆規則
+
+- 未指定 platform 且 stage=copy_generation 時，回傳需要補平台。
+- 未指定 ratio 且 stage=image_generation 時，回傳需要補尺寸。
+- 未指定 style 時，回傳風格選項，不自行套全部風格。
+- 多 platform 需求需分批處理。

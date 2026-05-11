@@ -1,0 +1,28 @@
+# PATCH NOTES v0.2.5｜Granular Sales Generator Structure
+
+## 本版重點
+
+1. 將銷售圖卡與社群文案拆成四條調用線：
+   - platforms：FB / IG / Threads
+   - sizes：1:1 / 4:5 / 9:16
+   - styles：投資理性感 / 自住溫暖感 / 首購友善感 / 高質感精品感 / 極簡乾淨感
+   - workflows：資料確認 / 產圖設定 / 圖片生成 / 文案生成 / 最終檢查
+
+2. 保留舊檔名相容：
+   - `04_COPY_PLATFORM_RULES.txt` 改為平台索引
+   - `05_STYLE_LIBRARY.txt` 改為風格索引
+   - `06_OUTPUT_TEMPLATES.txt` 改為模板索引
+   - 08 到 23 舊檔名仍保留對應內容，避免舊 section loading 立即失效。
+
+3. 新增圖片生成降級規則：
+   - 圖片生成前必須先整理短版產圖摘要
+   - 不在圖片生成階段同時輸出完整 FB / IG / Threads 文案
+   - 名片、人物、QR Code、電話、LINE 僅能使用使用者提供且可確認的內容
+
+4. 新增細分 routing：
+   - `00_index/03_GRANULAR_SALES_ROUTER.txt`
+   - `08_api_actions/03_GRANULAR_SALES_KNOWLEDGE_LOADER.txt`
+
+## 建議後續 API 支援參數
+
+`/api/knowledge-module?module=sales_generator&platform=fb&ratio=4:5&style=warm_home&stage=image_generation`
