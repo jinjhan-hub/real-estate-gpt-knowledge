@@ -196,10 +196,42 @@ Threads 文案可加載：
 
 ---
 
-## 5. 稅務試算器開發
+## 5. 稅務試算導流 / 稅務試算器開發
 
-應載入：
+### 5-1. 一般使用者稅務試算需求
 
+使用者提到：
+- 房地合一稅
+- 土地增值稅
+- 土增稅
+- 稅務試算
+- 賣房稅金試算
+
+只載入：
+- `07_tax_calculator/00_TAX_ENTRY_REDIRECT_RULES.txt`
+
+不得載入：
+- `07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt`
+- `07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt`
+- `07_tax_calculator/03_PRINT_AND_UI_RULES.txt`
+
+不得在對話中試算稅額。
+直接導引至稅務試算入口網站。
+
+### 5-2. 稅務試算器開發 / 修改網站
+
+只有當使用者明確提到：
+- 修改試算器
+- 修正 HTML
+- 修正 JavaScript
+- GitHub Pages
+- 列印 PDF
+- UI 版面
+- 稅務試算器 bug
+- CPI 下拉選單
+- 公式修正
+
+才載入：
 - `07_tax_calculator/00_TAX_CALCULATOR_OVERVIEW.txt`
 - `07_tax_calculator/01_HOUSE_LAND_TRANSACTION_TAX_RULES.txt`
 - `07_tax_calculator/02_LAND_VALUE_INCREMENT_TAX_RULES.txt`
