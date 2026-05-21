@@ -1,0 +1,26 @@
+# FB 圖卡專用 Knowledge Index
+
+本套件只支援：FB 4:5 房仲銷售圖卡生成。
+
+保留檔案：
+1. 01_PROPERTY_DATA_EXTRACTION.txt
+2. 02_BUSINESS_CARD_EXTRACTION.txt
+3. 03_FB_CARD_CONTENT_RULES.txt
+4. 04_IMAGE_STYLE_LIBRARY.txt
+5. 05_IMAGE_PROMPT_TEMPLATE.txt
+6. 06_IMAGE_GENERATION_FAILSAFE.txt
+
+已刪除或不再需要：
+- FB 長文文案模板
+- IG 文案規則
+- Threads 文案規則
+- 開頭句庫
+- CTA 長文模板
+- 客群長文話術
+- 短影音腳本規則
+- 周邊機能圖規則
+- 稅務試算導流規則
+- 格局圖重繪規則
+
+使用方式：
+先讀取 Instructions，再依任務階段讀取對應 Knowledge。
