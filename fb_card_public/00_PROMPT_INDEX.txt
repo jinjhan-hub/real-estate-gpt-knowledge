@@ -16,6 +16,11 @@
 4. 04_IMAGE_STYLE_LIBRARY.txt
 5. 05_IMAGE_PROMPT_TEMPLATE.txt
 6. 06_IMAGE_GENERATION_FAILSAFE.txt
+7. 07_AD_COMPLIANCE_CHECK.txt
+
+新增合規流程：
+使用者補充缺少資料後，必須先讀取 07_AD_COMPLIANCE_CHECK.txt。
+合規通過後，才可進入資料確認、風格選擇與圖片生成。
 
 已刪除或不再需要：
 - FB 長文文案模板
