@@ -9,6 +9,7 @@
 4. 04_IMAGE_STYLE_LIBRARY.txt
 5. 05_IMAGE_PROMPT_TEMPLATE.txt
 6. 06_IMAGE_GENERATION_FAILSAFE.txt
+7. 07_AD_COMPLIANCE_CHECK.txt
 
 已刪除或不再需要：
 - FB 長文文案模板
@@ -24,3 +25,16 @@
 
 使用方式：
 先讀取 Instructions，再依任務階段讀取對應 Knowledge。
+正式生成 FB 銷售圖卡前，必須讀取：
+
+1. 01_PROPERTY_DATA_EXTRACTION.txt
+2. 02_BUSINESS_CARD_EXTRACTION.txt
+3. 03_FB_CARD_CONTENT_RULES.txt
+4. 07_AD_COMPLIANCE_CHECK.txt
+5. 04_IMAGE_STYLE_LIBRARY.txt
+6. 05_IMAGE_PROMPT_TEMPLATE.txt
+7. 06_IMAGE_GENERATION_FAILSAFE.txt
+
+流程順序：
+
+資料判讀 → 聯絡資訊判讀 → 內容整理 → 廣告合規檢查 → 風格選擇 → 圖片提示詞 → 生成前防呆檢查 → 生成圖卡
