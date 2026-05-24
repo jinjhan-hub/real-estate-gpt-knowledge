@@ -3,6 +3,14 @@
 用途：
 整理名片、人物照、電話、LINE ID、營業員資訊。
 
+公版揭露資訊來源優先順序：
+
+1. verifyStoreAccess.disclosure 為最高優先來源。
+2. 經紀業名稱、經紀人姓名、經紀人證號一律使用 disclosure。
+3. 名片與使用者文字只用來補充營業員姓名、營業員證號、電話、LINE ID、人物照。
+4. 名片資料不得覆蓋 disclosure。
+5. 若 disclosure 缺少經紀業名稱、經紀人姓名或經紀人證號，停止生成，請使用者聯絡管理者更新 STORE_ACCESS_CONFIG。
+
 可整理：
 營業員姓名、營業員證號、職稱、電話、LINE ID、店名、人物照。
 
