@@ -2,7 +2,14 @@
 
 生成前必查：
 
+生成前必查：
+
 1. 是否已通過 verifyStoreAccess？
+   判斷標準：
+   - success / verified / ok 任一認證成功欄位為 true，即視為通過。
+   - 若 API 有回傳 active 欄位，active 必須為 true。
+   - 若 API 未回傳 active 欄位，不得因缺少 active 而判定失敗。
+   - disclosureOK 必須為 true。
 2. disclosure 是否完整？
 3. 是否完成資料判讀？
 4. 是否完成合規檢查？
@@ -118,7 +125,11 @@
 
 以下任一情況，必須停止生成：
 
-- 尚未通過 verifyStoreAccess
+以下任一情況，必須停止生成：
+
+- verifyStoreAccess 回傳失敗，且 success / verified / ok 均非 true
+- API 有回傳 active 欄位，且 active 不為 true
+- disclosureOK 不為 true
 - disclosure 不完整
 - 尚未完成合規檢查
 - 合規未通過
