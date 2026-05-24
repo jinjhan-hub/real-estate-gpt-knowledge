@@ -1,39 +1,29 @@
-# FB 圖卡公版 Knowledge Index
+# FB 圖卡公版 Index
 
-本套件只支援：FB 4:5 房仲銷售圖卡生成。
+本 Knowledge 只支援：
+FB 4:5 房仲銷售圖卡。
 
-公版核心差異：
-- 不預設任何固定經紀人姓名。
-- 不預設任何固定經紀業名稱。
-- 不預設任何固定經紀人證號。
-- 使用者完成資料上傳與辨識後，必須強制填入或確認自己的揭露資訊。
-- QR Code 一律不生成，只保留小型 QR Code 預留區。
+不支援：
+FB長文、IG、Threads、短影音、周邊機能圖、格局圖、稅務試算、新聞分析。
 
-保留檔案：
-1. 01_PROPERTY_DATA_EXTRACTION.txt
-2. 02_BUSINESS_CARD_EXTRACTION.txt
-3. 03_FB_CARD_CONTENT_RULES.txt
-4. 04_IMAGE_STYLE_LIBRARY.txt
-5. 05_IMAGE_PROMPT_TEMPLATE.txt
-6. 06_IMAGE_GENERATION_FAILSAFE.txt
-7. 07_AD_COMPLIANCE_CHECK.txt
+核心原則：
+1. 未通過 verifyStoreAccess，不得載入 Knowledge。
+2. disclosure 是唯一公版揭露資料來源。
+3. 不預設任何經紀業、經紀人、證號。
+4. 不自行補物件資料。
+5. 不生成 QR Code。
+6. 不生成未提供的房屋、室內、街景、地圖、人物。
 
-新增合規流程：
-使用者補充缺少資料後，必須先讀取 07_AD_COMPLIANCE_CHECK.txt。
-合規通過後，才可進入資料確認、風格選擇與圖片生成。
+disclosure 對應：
+brokerageName = 經紀業名稱
+brokerName = 經紀人姓名
+brokerLicenseNo = 經紀人證號
 
-已刪除或不再需要：
-- FB 長文文案模板
-- IG 文案規則
-- Threads 文案規則
-- 開頭句庫
-- CTA 長文模板
-- 客群長文話術
-- 短影音腳本規則
-- 周邊機能圖規則
-- 稅務試算導流規則
-- 格局圖重繪規則
-
-使用方式：
-先讀取 Instructions，再依任務階段讀取對應 Knowledge。
-不得一次載入全部 Knowledge。
+階段檔案：
+01_PROPERTY_DATA_EXTRACTION.txt
+02_BUSINESS_CARD_EXTRACTION.txt
+03_FB_CARD_CONTENT_RULES.txt
+04_IMAGE_STYLE_LIBRARY.txt
+05_IMAGE_PROMPT_TEMPLATE.txt
+06_IMAGE_GENERATION_FAILSAFE.txt
+07_AD_COMPLIANCE_CHECK.txt
