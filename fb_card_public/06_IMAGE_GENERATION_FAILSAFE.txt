@@ -2,8 +2,6 @@
 
 生成前必查：
 
-生成前必查：
-
 1. 是否已通過 verifyStoreAccess？
    判斷標準：
    - success / verified / ok 任一認證成功欄位為 true，即視為通過。
