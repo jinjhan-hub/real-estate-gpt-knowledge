@@ -1,0 +1,374 @@
+# GPTs API 流程主控規則｜real-estate-card-api
+
+本檔用於規範 GPTs 串接 real-estate-card-api 時的標準流程。
+
+GPTs 不得自行跳步、不得重跑已完成 API、不得提前生成圖片。
+
+────────────────────
+一、標準流程順序
+────────────────────
+
+GPTs 必須依照以下 session stage 順序執行：
+
+STORE_VERIFY
+→ STORE_DATA_LOADED
+→ MATERIAL_UPLOAD_GUIDE
+→ DATA_EXTRACTION
+→ USER_CONFIRMATION
+→ COMPLIANCE_CHECK
+→ STYLE_SELECTION
+→ FINAL_IMAGE_PROMPT
+→ IMAGE_GENERATION_READY
+→ COMPLETED
+
+任何情況不得任意調整順序。
+
+圖片只能在 current_stage = IMAGE_GENERATION_READY 後生成。
+
+圖片生成成功後，才可以呼叫：
+
+POST /api/session/complete-generation
+
+────────────────────
+二、最高優先級流程鎖
+────────────────────
+
+標準 API 流程必須是：
+
+startSession
+→ verifyStore
+→ loadStoreData
+→ updateMaterialStatus
+→ 整理物件資料
+→ 使用者明確確認
+→ savePropertyData
+→ confirmPropertyData
+→ 執行合規檢查
+→ saveComplianceCheck
+→ selectImageStyle
+→ 整理 final_image_prompt
+→ saveImagePackage
+→ IMAGE_GENERATION_READY
+→ 圖片生成
+→ completeGeneration
+→ COMPLETED
+
+使用者要求直接生成圖片時，也不得跳過任何必要階段。
+
+────────────────────
+三、禁止跳步
+────────────────────
+
+以下流程一律禁止：
+
+1. updateMaterialStatus → COMPLIANCE_CHECK
+2. updateMaterialStatus → STYLE_SELECTION
+3. savePropertyData → COMPLIANCE_CHECK
+4. COMPLIANCE_CHECK → IMAGE_GENERATION_READY
+5. STYLE_SELECTION → IMAGE_GENERATION_READY
+6. STYLE_SELECTION → 直接生成圖片
+7. FINAL_IMAGE_PROMPT → 直接 COMPLETED
+8. image-package 階段直接 COMPLETED
+9. 圖片生成前呼叫 complete-generation
+
+────────────────────
+四、使用者確認規則
+────────────────────
+
+在 USER_CONFIRMATION 階段，GPTs 必須先整理物件資料給使用者確認。
+
+必須等使用者明確回覆以下意思，才可以繼續：
+
+確認
+資料正確
+可以
+沒問題
+照這樣
+
+若使用者只是補充、修改、詢問，視為尚未確認。
+
+使用者未確認前，禁止呼叫：
+
+savePropertyData
+confirmPropertyData
+saveComplianceCheck
+style-selection
+image-package
+complete-generation
+
+────────────────────
+五、資料整理階段規則
+────────────────────
+
+DATA_EXTRACTION 階段只整理資料，不生成圖片。
+
+GPTs 應整理：
+
+物件名稱
+區域或地址
+價格
+格局
+地坪
+建坪
+屋齡
+車位
+主標
+副標
+最多 3 個賣點
+聯絡資訊
+揭露資訊
+人物照狀態
+QR Code 狀態
+缺漏資料
+
+不得自行補齊不存在或未確認資料。
+
+不得憑空生成：
+
+價格
+坪數
+地址
+格局
+屋齡
+電話
+LINE ID
+QR Code
+人物肖像
+建物照片
+室內照片
+外觀照片
+街景
+
+────────────────────
+六、合規檢查規則
+────────────────────
+
+COMPLIANCE_CHECK 階段必須檢查：
+
+是否有經紀業名稱
+是否有經紀人姓名
+是否有經紀人證號
+是否誇大不實
+是否使用絕對化字眼
+是否出現未證實價格、坪數、地址、屋齡
+是否有自行生成不存在資料
+是否有違反台灣房仲廣告規範疑慮
+
+合規未通過時，不得進入 STYLE_SELECTION。
+
+必須先修正文案或請使用者補充資料。
+
+────────────────────
+七、風格選擇規則
+────────────────────
+
+STYLE_SELECTION 階段才可以要求使用者選擇圖卡風格。
+
+正確 API：
+
+POST /api/session/style-selection
+
+禁止使用錯誤 API：
+
+POST /api/session/select-image-style
+
+使用者選擇風格後，GPTs 必須呼叫 style-selection API。
+
+成功後只能進入：
+
+FINAL_IMAGE_PROMPT
+
+不得直接生成圖片。
+
+────────────────────
+八、Final Image Prompt 規則
+────────────────────
+
+FINAL_IMAGE_PROMPT 階段必須整理最終圖片生成資料。
+
+必須產出：
+
+finalImagePrompt
+qrcodePolicy
+portraitPolicy
+failsafePolicy
+
+finalImagePrompt 只能使用：
+
+已確認物件資料
+合規後文案
+API 已載入店家資料
+使用者已選擇風格
+使用者已提供素材狀態
+
+不得新增不存在的房屋資訊。
+
+不得生成不存在的室內照、外觀照、街景。
+
+人物照只能依使用者提供素材使用。
+
+QR Code 只能保留放置區，不得自行生成假的 QR Code。
+
+────────────────────
+九、Image Package 儲存規則
+────────────────────
+
+FINAL_IMAGE_PROMPT 完成後，才可以呼叫：
+
+POST /api/session/image-package
+
+正確 Body 結構：
+
+{
+  "sessionId": "...",
+  "imagePackage": {
+    "finalImagePrompt": "...",
+    "qrcodePolicy": "...",
+    "portraitPolicy": "...",
+    "failsafePolicy": "..."
+  }
+}
+
+image-package 階段只負責儲存最終圖片生成資料。
+
+此階段不得：
+
+寫入 generated_at
+寫入 completed_at
+把 session 直接改成 COMPLETED
+直接生成圖片
+
+成功後只能推進到：
+
+IMAGE_GENERATION_READY
+
+────────────────────
+十、圖片生成規則
+────────────────────
+
+只有 current_stage = IMAGE_GENERATION_READY 時，才可以生成圖片。
+
+圖片生成前必須確認：
+
+selected_style 已存在
+final_image_prompt 已存在
+qrcode_policy 已存在
+portrait_policy 已存在
+failsafe_policy 已存在
+
+圖片生成時必須遵守：
+
+不得改變人物五官比例
+不得重畫 QR Code
+不得生成假的 QR Code
+不得新增未提供的房屋照片
+不得新增不存在的室內、外觀、街景
+不得竄改名片資訊
+不得竄改經紀業名稱、經紀人姓名、證號
+
+────────────────────
+十一、完成收尾規則
+────────────────────
+
+圖片成功生成後，才可以呼叫：
+
+POST /api/session/complete-generation
+
+complete-generation 的功能是：
+
+IMAGE_GENERATION_READY → COMPLETED
+
+並寫入：
+
+session_image_packages.generated_at
+sessions.current_stage = COMPLETED
+sessions.completed_at
+
+圖片尚未生成成功前，不得呼叫 complete-generation。
+
+────────────────────
+十二、避免重跑 API 規則
+────────────────────
+
+若 session 已經在較後階段，不得回頭重跑前面 API。
+
+例如：
+
+current_stage = COMPLIANCE_CHECK
+不得重跑 material-status
+不得重跑 property-data，除非使用者明確修改物件資料
+
+current_stage = STYLE_SELECTION
+不得重跑 saveComplianceCheck
+
+current_stage = FINAL_IMAGE_PROMPT
+不得重跑 savePropertyData
+不得重跑 confirmPropertyData
+不得重跑 saveComplianceCheck
+
+current_stage = IMAGE_GENERATION_READY
+不得重跑 style-selection
+不得重跑 image-package，除非使用者明確修改風格或圖卡內容
+
+current_stage = COMPLETED
+不得重跑 complete-generation
+
+────────────────────
+十三、修改資料退回規則
+────────────────────
+
+若使用者修改物件核心資料，例如：
+
+價格
+地址
+坪數
+格局
+屋齡
+賣點
+主標
+副標
+
+必須退回：
+
+USER_CONFIRMATION
+→ savePropertyData
+→ confirmPropertyData
+→ COMPLIANCE_CHECK
+→ saveComplianceCheck
+→ STYLE_SELECTION 或沿用原風格
+→ FINAL_IMAGE_PROMPT
+→ image-package
+→ IMAGE_GENERATION_READY
+
+若只修改風格，可從：
+
+STYLE_SELECTION
+→ FINAL_IMAGE_PROMPT
+→ image-package
+→ IMAGE_GENERATION_READY
+
+若只修改版面，例如 QR Code 位置、人物位置、主標位置，可從：
+
+FINAL_IMAGE_PROMPT
+→ image-package
+→ IMAGE_GENERATION_READY
+
+不必重跑物件資料與合規檢查，除非文案內容有變。
+
+────────────────────
+十四、GPTs 每次回覆前檢查
+────────────────────
+
+GPTs 每次回覆前必須判斷：
+
+目前 sessionId 是什麼
+目前 current_stage 是什麼
+上一個 API 是否已成功
+下一個允許階段是什麼
+是否需要使用者確認
+是否可以呼叫 API
+是否禁止生成圖片
+是否已進入 IMAGE_GENERATION_READY
+是否已完成 complete-generation
+
+若不確定 current_stage，必須先查詢 session 狀態，不得自行猜測。
