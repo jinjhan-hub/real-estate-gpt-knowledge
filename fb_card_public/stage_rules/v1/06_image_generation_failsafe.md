@@ -1,414 +1,293 @@
-# 06｜Image Generation Failsafe Rule
-# ruleKey: 06_image_generation_failsafe
-# requiredStage: IMAGE_POLICIES / IMAGE_GENERATION_READY
-# nextAction: saveImagePolicies / generateImage
-# mustCallNext: saveImagePolicies / generateImage
+# 06_image_generation_failsafe｜A-1R-3 真實素材與合規檢查修正版
 
-本規則用於「圖片生成安全規則與 failsafe 階段」。
+## 本階段任務
 
-本階段目標：
-1. 在圖片生成前再次檢查 final_image_prompt。
-2. 強制禁止 AI 生成 QR Code。
-3. 強制禁止 AI 生成未授權的證號、地址、電話或揭露文字。
-4. 強制禁止假人物、假物件照片、假聯絡資訊。
-5. 確保 generateImage 後必須等待人工檢查。
-6. 人工檢查未通過時，不得呼叫 completeGeneration。
+本階段負責檢查 GPTs 對話端產出的 FB 4:5 房仲銷售圖卡是否合格。
 
----
+只要人工檢查未通過，不得呼叫 `completeGeneration`。
 
-## 一、流程硬鎖
+本階段特別針對 A-1R-2 發現的問題強化：
 
-進入本階段時，必須遵守：
-
-1. 未保存 image policies 前，不得呼叫 generateImage。
-2. 未成功 generateImage 前，不得呼叫 completeGeneration。
-3. generateImage 後必須停止，等待人工檢查。
-4. 人工檢查未通過，不得呼叫 completeGeneration。
-5. 不得使用 ChatGPT 內建圖片生成工具取代 API 流程。
-6. 不得使用 image_gen.text2im，除非本專案流程明確要求。
-7. 不得把圖片 URL、圖片路徑、base64 存入 API / DB，除非 API 回傳流程本身已設計處理。
-8. 不得修改已完成 session。
-9. 不得重開已完成 session。
-10. 不得重跑 B1、B2、B3。
-11. 不得跳關。
+1. 真實物件照片未被使用。
+2. AI 生成了非原始素材的房屋室內或外觀。
+3. 名片人物照未被使用。
+4. AI 生成了錯誤業務人物。
+5. QR Code 必須維持預留區，不得由 AI 生成。
+6. 聯絡與揭露資料必須完整。
 
 ---
 
-## 二、QR Code Failsafe｜改為預留區
+## 一、物件照片檢查
 
-圖片生成階段禁止生成 QR Code。
+### 最高原則
 
-無論使用者是否提供 QR Code：
+本任務不是房屋照片生成任務，而是銷售圖卡排版任務。
 
-1. 不得生成 QR Code。
-2. 不得重繪 QR Code。
-3. 不得仿製 QR Code。
-4. 不得產生類 QR Code 黑白方塊圖樣。
-5. 不得產生看似可掃描但實際失效的假 QR Code。
-6. 只能在版面上預留 QR Code 放置區。
-7. QR Code 放置區應保持乾淨、方正、留白足夠，方便後製貼上原始 QR Code。
-8. 若圖片中出現任何 AI 生成的 QR Code 或類 QR Code 圖樣，人工檢查必須判定 failed。
-9. 不得描述 QR Code 的黑白圖樣細節。
-10. 不得要求模型「照著 QR Code 畫出來」。
-11. 不得將 QR Code 圖檔交給 AI 重繪。
-12. 真正 QR Code 必須由後製流程或人工貼上原始 QR Code 圖檔。
+若使用者已上傳真實物件照片，圖卡中的所有房屋、室內、外觀、庭院、大門、車庫、家具與裝潢畫面，均只能來自使用者上傳的原始物件照片。
 
-final_image_prompt 必須包含：
+禁止 AI 生成任何新的房屋、室內、外觀、庭院、大門、車庫、家具或裝潢畫面。
 
-```text
-請預留 QR Code 放置區，不要生成 QR Code 圖樣。
+---
+
+### 合格條件
+
+符合以下條件才可視為物件照片通過：
+
+1. 圖卡主要照片可確認來自使用者上傳的原始物件照片。
+2. 照片只是被裁切、拼貼、加框、加陰影、加遮罩或放入版型。
+3. 照片內容沒有被重繪。
+4. 沒有出現原始照片中不存在的室內、外觀、庭院、大門、車庫、家具或裝潢。
+5. `luxury_premium` 只影響版面設計，不影響照片內容。
+
+---
+
+### 不合格條件
+
+出現以下任一情況，物件照片檢查不通過：
+
+1. 圖卡使用 AI 生成的房屋照片。
+2. 圖卡出現與原始素材不一致的豪宅外觀。
+3. 圖卡出現不存在的室內空間。
+4. 圖卡出現不存在的庭院、大門、車庫、家具或裝潢。
+5. 使用者上傳的物件照片未被使用。
+6. 圖卡照片看起來精美，但無法確認來自原始物件照片。
+7. 依照物件資料生成示意圖或幻想圖。
+
+---
+
+### 對應 failedReasons
+
+若圖卡主要照片未使用上傳真實物件照片：
+
+```txt
+REAL_PROPERTY_PHOTO_MISMATCH
+SOURCE_PHOTO_NOT_USED
 ```
 
-人工檢查時：
+若圖卡出現 AI 生成的不存在房屋、室內、外觀、庭院、大門、車庫、家具或裝潢：
 
-若圖卡出現 AI 生成 QR Code，failedReason 必須包含：
+```txt
+GENERATED_FAKE_PROPERTY_INTERIOR_OR_EXTERIOR
+```
 
-```text
+若照片看起來精美但不是原始物件照片，仍應判定失敗：
+
+```txt
+REAL_PROPERTY_PHOTO_MISMATCH
+SOURCE_PHOTO_NOT_USED
+GENERATED_FAKE_PROPERTY_INTERIOR_OR_EXTERIOR
+```
+
+---
+
+## 二、人物照片檢查
+
+### 最高原則
+
+若名片上有人物照片，該照片即為有效人物素材，且是唯一合法人物來源。
+
+本任務禁止生成新的業務人物、女性房仲形象、職業照、半身照或頭像。
+
+圖卡中的人物只能來自名片上的原始人物照片。
+
+---
+
+### 合格條件
+
+符合以下條件才可視為人物照片通過：
+
+1. 圖卡有使用名片上的人物照片。
+2. 人物可作為頭像、半身照或聯絡區人物照。
+3. 人物外貌與名片人物一致。
+4. 只做裁切、去背、柔邊、加框或自然排版。
+5. 沒有更換人物身份或外貌。
+
+---
+
+### 不合格條件
+
+出現以下任一情況，人物照片檢查不通過：
+
+1. 名片上有人物照片，但圖卡未出現人物，且未說明不可用原因。
+2. 圖卡出現人物，但該人物不是名片人物。
+3. 圖卡出現 AI 生成的女性房仲形象。
+4. 圖卡出現 AI 職業照、頭像或半身照。
+5. 使用人像 icon 取代名片人物。
+6. 改變人物性別、年齡感、五官、髮型、臉型或整體外貌。
+7. 生成與名片人物不一致的不明來源人物。
+
+---
+
+### 對應 failedReasons
+
+若名片上有人物照片，但圖卡未出現該人物，且未說明不可用原因：
+
+```txt
+PORTRAIT_SOURCE_NOT_USED
+```
+
+若圖卡出現人物，但該人物不是由名片人物照裁切或引用，而是 AI 生成的新人物、職業形象照、女性房仲形象或不明來源人物：
+
+```txt
+FAKE_PORTRAIT_GENERATED
+```
+
+此情況不可視為人物通過。
+
+---
+
+## 三、聯絡與揭露資料檢查
+
+圖卡必須包含以下資料：
+
+1. 營業員姓名
+2. 聯絡電話
+3. 營業員證號
+4. 經紀業名稱
+5. 經紀人名稱
+6. 經紀人證號
+
+缺少任一項，即判定不通過。
+
+### 對應 failedReason
+
+```txt
+CONTACT_OR_DISCLOSURE_MISSING
+```
+
+### CONTACT_OR_DISCLOSURE_MISSING 適用情況
+
+適用於：
+
+1. 缺少營業員姓名
+2. 缺少聯絡電話
+3. 缺少營業員證號
+4. 缺少經紀業名稱
+5. 缺少經紀人名稱
+6. 缺少經紀人證號
+
+---
+
+## 四、QR Code 預留區檢查
+
+### 合格條件
+
+符合以下條件才可視為 QR Code 通過：
+
+1. 只有乾淨空白框。
+2. 可標示「QR Code 預留區」。
+3. 可標示「請後續貼上您的 QR Code」。
+4. 沒有任何黑白方塊圖樣。
+5. 沒有可掃描或類似可掃描的 QR Code。
+
+---
+
+### 不合格條件
+
+出現以下任一情況，QR Code 檢查不通過：
+
+1. 出現 AI 生成 QR Code。
+2. 出現仿 QR Code 圖樣。
+3. 出現類 QR Code 黑白方塊。
+4. 出現看似可掃描的圖樣。
+5. 原始 QR Code 被 AI 重繪或改寫。
+
+### 對應 failedReason
+
+```txt
 QR_CODE_GENERATED_BY_AI
 ```
 
-可追加 failedReason：
+---
 
-```text
-FAKE_QR_CODE
-QR_CODE_REDRAWN
-QR_CODE_LIKE_PATTERN
-```
+## 五、人工檢查 failedReasons 總表
+
+| 檢查項目 | 不通過情況 | failedReason |
+|---|---|---|
+| 物件照片 | 圖卡主要照片與使用者上傳原始物件照片不一致 | `REAL_PROPERTY_PHOTO_MISMATCH` |
+| 物件照片 | 使用者已上傳物件照，但圖卡未使用原始素材 | `SOURCE_PHOTO_NOT_USED` |
+| 假房屋生成 | 出現 AI 生成的不存在房屋、室內、外觀、庭院、大門、車庫、家具或裝潢 | `GENERATED_FAKE_PROPERTY_INTERIOR_OR_EXTERIOR` |
+| 人物照片 | 名片上有人物照片，但圖卡未出現該人物，且未說明不可用原因 | `PORTRAIT_SOURCE_NOT_USED` |
+| 假人物生成 | 出現與名片人物不一致的新人物、女性房仲形象、職業照或不明來源人物 | `FAKE_PORTRAIT_GENERATED` |
+| 聯絡揭露 | 缺少營業員姓名、電話、營業員證號、經紀業名稱、經紀人名稱或經紀人證號 | `CONTACT_OR_DISCLOSURE_MISSING` |
+| QR Code | 出現 AI 生成、重繪、仿製或類 QR Code 圖樣 | `QR_CODE_GENERATED_BY_AI` |
 
 ---
 
-## 三、營業員證號與聯絡資訊 Failsafe
+## 六、完成限制
 
-圖片生成階段不得產生未授權的營業員或公司聯絡資訊。
+只要出現以下任一情況，不得呼叫 `completeGeneration`：
 
-禁止事項：
+1. 物件照片不是使用者上傳原始照片。
+2. 圖卡出現 AI 生成房屋照片。
+3. 名片有人物照，但圖卡未使用名片人物。
+4. 圖卡出現 AI 生成業務人物。
+5. QR Code 被 AI 生成或仿製。
+6. 聯絡與揭露資料缺漏。
+7. 人工檢查未通過。
 
-1. 不得生成未提供的營業員證號。
-2. 不得生成未提供的營業員電話。
-3. 不得生成未提供的公司地址。
-4. 不得生成未提供的公司電話。
-5. 不得生成未提供的經紀業字號。
-6. 不得生成未提供的經紀人字號。
-7. 不得生成看似正式的假營業員證號。
-8. 不得生成看似正式的假經紀業字號。
-9. 若名片文字不清楚，不得在圖卡上補出推測內容。
-10. 圖卡中的營業員證號必須來自名片、使用者輸入或 API disclosure。
-11. 圖卡中的公司地址與公司電話必須來自名片、使用者輸入或 API disclosure。
-12. 不得使用其他案例殘留資料。
-13. 不得使用測試資料。
-14. 不得使用其他店家或其他業務資料。
-15. 不得根據品牌、縣市、店名自行推測揭露資訊。
-
-若圖片中出現來源不明的營業員證號、經紀業字號、公司地址或公司電話，人工檢查必須判定 failed。
-
-failedReason：
-
-```text
-WRONG_AGENT_LICENSE_NO
-UNVERIFIED_AGENT_LICENSE_NO
-WRONG_BROKER_LICENSE_TEXT
-UNAUTHORIZED_DISCLOSURE_TEXT
-UNVERIFIED_COMPANY_CONTACT
-WRONG_COMPANY_CONTACT
-```
+若人工檢查未通過，應回報 failedReasons，並停止流程。
 
 ---
 
-## 四、人物生成 Failsafe
+## 七、A-1R-3 重測判定標準
 
-圖片生成階段必須遵守人物素材限制。
+A-1R-3 只驗證以下重點：
 
-若使用者沒有提供人物照：
+1. 真實物件照片是否被正確嵌入圖卡。
+2. 是否完全避免 AI 生成房屋室內或外觀。
+3. 名片人物照是否被正確使用。
+4. 是否完全避免 AI 生成假人物。
+5. QR Code 是否仍維持乾淨預留區。
+6. 聯絡與揭露資料是否完整。
 
-1. 不得生成真人業務。
-2. 不得生成看似真實房仲人物。
-3. 不得生成拿名片、拿牌子、站在房屋前的假業務。
-4. 不得生成與使用者或品牌相關的假人像。
-5. 可使用純版面、房屋照片、圖形元素、文字排版。
+### A-1R-3 通過條件
 
-若使用者有提供人物照：
-
-1. 不得改變人物身份。
-2. 不得生成不同臉孔。
-3. 不得過度美化導致不像本人。
-4. 不得生成多餘人物。
-5. 不得將人物放入誤導性場景。
-
-若圖片中出現未授權假人物，人工檢查必須判定 failed。
-
-failedReason：
-
-```text
-FAKE_PERSON_GENERATED
-UNAUTHORIZED_PERSON_GENERATION
-WRONG_PERSON_IDENTITY
+```txt
+1. 房屋照片必須看得出是使用者上傳原圖。
+2. 不能出現 AI 生成的豪宅室內或外觀。
+3. 人物必須來自名片人物照。
+4. 不能出現 AI 生成的女性房仲或職業形象人物。
+5. QR Code 只能是空白預留框。
+6. 營業員姓名、電話、營業員證號、經紀業名稱、經紀人名稱、經紀人證號必須完整。
 ```
+
+### A-1R-3 不通過範例
+
+若產圖結果類似以下情況，應判定不通過：
+
+1. 圖卡照片是 AI 生成的客廳、樓梯、臥室、廚房或豪宅場景。
+2. 圖卡人物是 AI 生成的女性房仲，而非名片人物。
+3. 圖卡有漂亮 QR Code 或類 QR Code 黑白圖樣。
+4. 圖卡缺少營業員證號或經紀人證號。
 
 ---
 
-## 五、物件照片 Failsafe
+## 八、建議回報格式
 
-圖片生成階段必須保護物件照片真實性。
+若通過：
 
-1. 必須以使用者提供的物件照片為主。
-2. 不得替換成其他房屋。
-3. 不得生成不存在的外觀。
-4. 不得生成不存在的室內空間。
-5. 不得改變房屋結構造成誤導。
-6. 不得生成不存在的車庫、庭院、電梯、景觀。
-7. 不得把其他物件照片混入本案。
-8. 不得將範例圖當成本案照片。
-9. 不得用 AI 想像圖取代真實照片。
-
-若圖片中物件照片不正確，人工檢查必須判定 failed。
-
-failedReason：
-
-```text
-WRONG_PROPERTY_PHOTO
-FAKE_PROPERTY_PHOTO
-PROPERTY_PHOTO_REPLACED
-UNAUTHORIZED_IMAGE_ELEMENT
+```txt
+人工檢查通過。
+物件照片使用原始上傳照片。
+人物照片使用名片人物照。
+QR Code 僅預留空白區。
+聯絡與揭露資料完整。
+可呼叫 completeGeneration。
 ```
 
----
+若不通過：
 
-## 六、文字生成 Failsafe
+```txt
+人工檢查未通過。
+不可呼叫 completeGeneration。
 
-圖片中的文字必須遵守：
+failedReasons：
+- [列出失敗原因]
 
-1. 只能使用 final_image_prompt 內已確認資料。
-2. 不得生成未提供的價格。
-3. 不得生成未提供的坪數。
-4. 不得生成未提供的地址。
-5. 不得生成未提供的格局。
-6. 不得生成未提供的屋齡。
-7. 不得生成未提供的車位。
-8. 不得生成未提供的證號。
-9. 不得生成未提供的電話。
-10. 不得生成未提供的公司地址。
-11. 不得生成未提供的公司電話。
-12. 不得生成未提供的經紀業字號。
-13. 不得出現測試字樣。
-14. 不得出現測試業務。
-15. 不得出現測試電話。
-16. 不得出現其他案例殘留資訊。
+主要問題：
+- [簡述問題]
 
-若圖片文字與 final_image_prompt 或已確認資料不一致，人工檢查必須判定 failed。
-
-failedReason：
-
-```text
-WRONG_TEXT_GENERATED
-UNAUTHORIZED_DISCLOSURE_TEXT
-TEST_DATA_LEAKED
-WRONG_PROPERTY_DATA
-```
-
----
-
-## 七、final_image_prompt 生成前檢查
-
-在 saveImagePolicies 或 generateImage 前，必須檢查 final_image_prompt 是否包含以下安全限制：
-
-```text
-1. 請預留 QR Code 放置區，不要生成 QR Code 圖樣。
-2. 不要生成、重繪、仿製或嵌入 QR Code。
-3. 不要生成假人物。
-4. 若未提供人物照，不要生成真人業務形象。
-5. 不要生成任何未提供的營業員證號、經紀人字號、經紀業字號、公司地址、公司電話或營業員電話。
-6. 所有證號、地址、電話與揭露資訊，必須完全依照已確認資料輸出。
-7. 不要使用測試案例、範例資料或其他店家資料。
-8. 使用使用者提供的物件照片，不要替換成其他房屋。
-```
-
-若 final_image_prompt 缺少 QR Code 禁止生成規則，不得進入 generateImage。
-
-若 final_image_prompt 含有「生成 QR Code」、「繪製 QR Code」、「仿製 QR Code」、「可掃描 QR Code」等要求，不得進入 generateImage。
-
----
-
-## 八、image policies 必須包含
-
-saveImagePolicies 時，應包含以下政策內容：
-
-### qrcode_policy
-
-```text
-圖片生成階段禁止生成、重繪、仿製或嵌入 QR Code。
-無論使用者是否提供 QR Code，均只能預留 QR Code 放置區。
-QR Code 放置區應為乾淨白底或淺色方框。
-真正 QR Code 應由後製流程或人工貼上原始 QR Code 圖檔。
-若圖片中出現 AI 生成 QR Code 或類 QR Code 圖樣，人工檢查必須 failed。
-```
-
-### portrait_policy
-
-```text
-若使用者沒有提供人物照，不得生成真人業務人物。
-若使用者有提供人物照，不得改變人物身份，不得生成不同人物，不得新增未授權人物。
-```
-
-### failsafe_policy
-
-```text
-圖片生成不得產生假 QR Code、假人物、假物件照片、未授權證號、未授權電話、未授權地址、錯誤經紀業字號、測試資料或其他案例殘留資料。
-generateImage 後必須停止，等待人工檢查。
-人工檢查通過後，才可 completeGeneration。
-```
-
----
-
-## 九、generateImage 後人工檢查規則
-
-generateImage 成功後，必須停止流程。
-
-不得自動呼叫 completeGeneration。
-
-必須等待使用者人工檢查圖片。
-
-人工檢查項目：
-
-1. 圖片中是否沒有 AI 生成 QR Code。
-2. 圖片中是否只有 QR Code 放置區。
-3. 圖片中是否沒有類 QR Code 黑白方塊圖樣。
-4. 物件照片是否正確。
-5. 是否沒有生成假人物。
-6. 營業員姓名是否正確。
-7. 營業員電話是否正確。
-8. 營業員證號是否正確，且來源明確。
-9. 公司地址是否正確，且來源明確。
-10. 公司電話是否正確，且來源明確。
-11. 公司名稱是否正確。
-12. 經紀人姓名是否正確。
-13. 經紀人字號是否正確。
-14. 經紀業相關字號是否正確。
-15. 是否沒有測試資料殘留。
-16. 是否沒有其他店家資料。
-17. 是否沒有其他業務資料。
-18. 是否沒有未提供的地址、電話、證號。
-19. 物件價格、坪數、格局、地址是否正確。
-20. 是否沒有誇大或不實文字。
-
----
-
-## 十、人工檢查通過條件
-
-只有在以下條件全部成立時，才可 completeGeneration：
-
-1. 人工檢查 checked = true。
-2. 人工檢查 passed = true。
-3. 圖片中沒有 AI 生成 QR Code。
-4. 圖片中只有 QR Code 放置區。
-5. 圖片中沒有類 QR Code 圖樣。
-6. 物件照片正確。
-7. 沒有生成假人物。
-8. 沒有生成錯誤經紀業字號。
-9. 沒有生成錯誤營業員證號。
-10. 沒有生成來源不明的證號、地址、電話。
-11. 沒有測試資料殘留。
-12. 沒有其他案例資料。
-13. 圖片文字與 final_image_prompt 一致。
-14. 使用者明確表示可以完成。
-
----
-
-## 十一、人工檢查未通過條件
-
-只要出現以下任一情況，不得 completeGeneration：
-
-1. QR Code 被 AI 重繪。
-2. QR Code 失效。
-3. 出現假 QR Code。
-4. 出現類 QR Code 黑白方塊圖樣。
-5. 出現錯誤經紀業字號。
-6. 出現錯誤經紀人字號。
-7. 出現錯誤營業員證號。
-8. 出現來源不明的營業員證號。
-9. 出現來源不明的公司地址。
-10. 出現來源不明的公司電話。
-11. 出現假人物。
-12. 出現錯誤物件照片。
-13. 出現測試資料。
-14. 出現其他店家資料。
-15. 出現其他業務資料。
-16. 使用者明確表示未通過。
-
-failedReason 可使用：
-
-```text
-QR_CODE_GENERATED_BY_AI
-FAKE_QR_CODE
-QR_CODE_REDRAWN
-QR_CODE_LIKE_PATTERN
-WRONG_AGENT_LICENSE_NO
-UNVERIFIED_AGENT_LICENSE_NO
-WRONG_BROKER_LICENSE_TEXT
-UNAUTHORIZED_DISCLOSURE_TEXT
-UNVERIFIED_COMPANY_CONTACT
-WRONG_COMPANY_CONTACT
-FAKE_PERSON_GENERATED
-WRONG_PROPERTY_PHOTO
-TEST_DATA_LEAKED
-```
-
----
-
-## 十二、completeGeneration 守門規則
-
-completeGeneration 只能在以下條件全部成立時呼叫：
-
-1. generateImage 已完成。
-2. 人工檢查已完成。
-3. checked = true。
-4. passed = true。
-5. 使用者明確允許 completeGeneration。
-6. 沒有 failedReasons。
-7. 沒有 blocked。
-8. 圖片沒有 AI 生成 QR Code。
-9. 圖片沒有錯誤揭露資訊。
-10. 圖片沒有未授權證號、電話或地址。
-
-若 checked = false，不得 completeGeneration。
-
-若 passed = false，不得 completeGeneration。
-
-若 failedReasons 不為空，不得 completeGeneration。
-
-若使用者要求停止，不得 completeGeneration。
-
----
-
-## 十三、本階段完成判定
-
-本階段分兩段：
-
-### A. 儲存圖片政策
-
-完成 image policies 後，才可呼叫：
-
-```text
-saveImagePolicies
-```
-
-成功後才可進入：
-
-```text
-IMAGE_GENERATION_READY
-```
-
-### B. 執行圖片生成
-
-進入 IMAGE_GENERATION_READY 後，才可呼叫：
-
-```text
-generateImage
-```
-
-generateImage 後必須停止，等待人工檢查。
-
-不得自動呼叫：
-
-```text
-completeGeneration
+下一步：
+- 修正規則或重新產圖，不得完成本次流程。
 ```
