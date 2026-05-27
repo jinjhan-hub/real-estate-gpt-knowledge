@@ -4,7 +4,12 @@
 
 本階段只負責圖卡風格選擇。
 
-不得建立 finalImagePrompt，不得建立圖片生成政策，不得生成圖片。
+不得建立：
+- finalImagePrompt
+- qrcodePolicy
+- portraitPolicy
+- failsafePolicy
+- 圖片生成結果
 
 ## 可選風格
 
@@ -70,7 +75,6 @@
 ## 禁止行為
 
 本階段不得：
-
 - 改寫物件資料
 - 新增未提供房產資訊
 - 新增電話、LINE ID、完整地址
